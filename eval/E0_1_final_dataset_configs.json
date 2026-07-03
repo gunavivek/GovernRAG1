@@ -1,0 +1,32 @@
+[
+    {
+        "subset": "delucionqa",
+        "split": "test",
+        "total_records": 184
+    },
+    {
+        "subset": "expertqa",
+        "split": "test",
+        "total_records": 203
+    },
+    {
+        "subset": "finqa",
+        "split": "test",
+        "total_records": 2294
+    },
+    {
+        "subset": "hagrid",
+        "split": "test",
+        "total_records": 1318
+    },
+    {
+        "subset": "hotpotqa",
+        "split": "test",
+        "total_records": 390
+    },
+    {
+        "subset": "msmarco",
+        "split": "test",
+        "total_records": 423
+    }
+]

@@ -1,0 +1,5 @@
+{"id": "001", "intent": "extractive", "dataset_name": "DS1", "primary_domain": "IT", "exact_match": 0, "f1_token_overlap": 0.9, "entity_match": 1, "numeric_match": -1}
+{"id": "002", "intent": "extractive", "dataset_name": "DS1", "primary_domain": "IT", "exact_match": 0, "f1_token_overlap": 0.5, "entity_match": 0, "numeric_match": -1}
+{"id": "003", "intent": "quantitative", "dataset_name": "DS2", "primary_domain": "Finance", "exact_match": 0, "f1_token_overlap": 0.7, "entity_match": -1, "numeric_match": 1}
+{"id": "004", "intent": "quantitative", "dataset_name": "DS2", "primary_domain": "Finance", "exact_match": 0, "f1_token_overlap": 0.6, "entity_match": -1, "numeric_match": 0}
+{"id": "005", "intent": "summarization", "dataset_name": "DS1", "primary_domain": "IT", "exact_match": 0, "f1_token_overlap": 0.8, "entity_match": -1, "numeric_match": -1}

@@ -1,0 +1,15 @@
+{
+  "cuad": "Legal",
+  "finqa": "Finance",
+  "tatqa": "Finance",
+  "pubmedqa": "Biomedical Research",
+  "covidqa": "Biomedical Research",
+  "hotpotqa": "General Knowledge",
+  "msmarco": "General Knowledge",
+  "hagrid": "General Knowledge",
+  "expertqa": "General Knowledge",
+  "delucionqa": "Customer Support",
+  "emanual": "Customer Support",
+  "techqa": "Customer Support",
+  "NA": "General"
+}

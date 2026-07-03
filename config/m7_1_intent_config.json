@@ -1,0 +1,17 @@
+{
+    "model_name": "gpt-3.5-turbo",
+    "api_provider": "openai",
+    "output_file": "output/M7_1_intents.jsonl",
+    "input_files": [
+        "data/Q1_Fact-Based_Extractive Questions (Direct Answers).txt",
+        "data/Q2_Summarization_Descriptive Questions (Synthesizing Information).txt",
+        "data/Q3_Quantitative _ Numerical Questions (Numbers, Dates, Measurements).txt",
+        "data/Q4_Inferential_Contextual Questions (Drawing Conclusions).txt"
+    ],
+    "label_definitions": {
+        "Extractive": "Direct fact, specific information, answerable by looking up a small number of chunks.",
+        "Summarization": "High-level overview or synthesis of multiple pieces of information.",
+        "Quantitative": "Asks for numbers, dates, counts, percentages, metrics or calculations.",
+        "Inferential": "Asks for reasoning, implications, impact, conclusions, or 'why/how' explanations."
+    }
+}

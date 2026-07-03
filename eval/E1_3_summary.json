@@ -1,0 +1,66 @@
+{
+    "Global_Summary": {
+        "total_records": 5,
+        "mean_em": 0.0,
+        "mean_f1": 0.7,
+        "entity_accuracy": 0.5,
+        "numeric_accuracy": 0.5
+    },
+    "Grouped_Summaries": {
+        "intent": {
+            "extractive": {
+                "count": 2,
+                "mean_em": 0.0,
+                "mean_f1": 0.7,
+                "entity_accuracy": 0.5,
+                "numeric_accuracy": NaN
+            },
+            "quantitative": {
+                "count": 2,
+                "mean_em": 0.0,
+                "mean_f1": 0.65,
+                "entity_accuracy": NaN,
+                "numeric_accuracy": 0.5
+            },
+            "summarization": {
+                "count": 1,
+                "mean_em": 0.0,
+                "mean_f1": 0.8,
+                "entity_accuracy": NaN,
+                "numeric_accuracy": NaN
+            }
+        },
+        "dataset_name": {
+            "DS1": {
+                "count": 3,
+                "mean_em": 0.0,
+                "mean_f1": 0.7333,
+                "entity_accuracy": 0.5,
+                "numeric_accuracy": NaN
+            },
+            "DS2": {
+                "count": 2,
+                "mean_em": 0.0,
+                "mean_f1": 0.65,
+                "entity_accuracy": NaN,
+                "numeric_accuracy": 0.5
+            }
+        },
+        "primary_domain": {
+            "Finance": {
+                "count": 2,
+                "mean_em": 0.0,
+                "mean_f1": 0.65,
+                "entity_accuracy": NaN,
+                "numeric_accuracy": 0.5
+            },
+            "IT": {
+                "count": 3,
+                "mean_em": 0.0,
+                "mean_f1": 0.7333,
+                "entity_accuracy": 0.5,
+                "numeric_accuracy": NaN
+            }
+        }
+    }
+}

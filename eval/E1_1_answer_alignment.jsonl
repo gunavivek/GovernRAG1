@@ -1,0 +1,1 @@
+{"id": "test record_id 1", "generated_answer": "Apollo", "response": "The new cloud-native architecture is named Apollo.", "gold_normalized": "new cloudnative architecture is named apollo", "pred_normalized": "apollo", "exact_match": 0, "f1_token_overlap": 0.2857142857142857}
