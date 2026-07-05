@@ -1,8 +1,13 @@
 # --------------------------------------------------------------------------
-# MODULE 4 (HARDENED): retry/backoff on transient errors, skip-on-failure
-# (an unalignable node -> "Unmapped (Error)", not a crash), UTF-8-safe prints,
-# and incremental checkpoint/resume. Alignment logic + prompt are UNCHANGED,
-# so it is OUTPUT-NEUTRAL. Drop-in replacement for M4_Gov_Concept_Alignment_V3.py
+# MODULE 4 (PARALLEL): same alignment DECISION LOGIC as the hardened V3
+# (identical prompt, system instruction, conf<40 gate, edge rules, temp=0.0),
+# but LLM calls run concurrently. Graph mutations happen ONLY in the main
+# thread, so the resulting graph is identical to the serial version.
+# Also writes per-node results to output/M4_alignment_results.jsonl for the
+# equivalence check against the serial run's log.
+#
+# OUTPUT-NEUTRAL by construction: concurrency changes *when* calls happen,
+# never *what* each call sends or *how* results are applied.
 # --------------------------------------------------------------------------
 import os
 import json
@@ -14,14 +19,14 @@ import time
 import re
 import sys
 import random
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError as FuturesTimeoutError
 
 try:
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # Windows console safety
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 except Exception:
     pass
 
-print("--- Starting M4_V3.1 (HARDENED): Poly-Ontological Alignment ---")
+print("--- Starting M4_V3.1 (PARALLEL): Poly-Ontological Alignment ---")
 
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
@@ -30,15 +35,16 @@ if not api_key:
 
 client = genai.Client(api_key=api_key)
 LLM_MODEL = "gemini-3-flash-preview"
-RATE_LIMIT_DELAY = 1.0
 REQUEST_TIMEOUT_SECONDS = 300
 MAX_TRANSPORT_ATTEMPTS = 5
 CHECKPOINT_EVERY = 250
+MAX_WORKERS = 10          # concurrent LLM calls; well under Tier-1 RPM. raise if stable.
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INPUT_DATA_GRAPH = os.path.join(PROJECT_ROOT, 'output', 'M3_3_Augmented_Graph.graphml')
 INPUT_REF_GRAPH = os.path.join(PROJECT_ROOT, 'output', 'R_Embedded_Reference_Ontology.graphml')
 OUTPUT_GRAPH = os.path.join(PROJECT_ROOT, 'output', 'M4_Hybrid_Graph.graphml')
+RESULTS_LOG = os.path.join(PROJECT_ROOT, 'output', 'M4_alignment_results.jsonl')
 
 TRANSIENT = ("503", "unavailable", "429", "resource_exhausted", "500",
              "internal", "deadline", "timeout", "high demand")
@@ -46,6 +52,7 @@ TRANSIENT = ("503", "unavailable", "429", "resource_exhausted", "500",
 def _is_transient(e):
     return any(t in str(e).lower() for t in TRANSIENT)
 
+# ---- IDENTICAL to hardened V3 (verbatim) ----
 SYSTEM_INSTRUCTION = """
 You are a Business Architecture Mapper.
 TASK: Align the 'Document Concept' to the best matching 'Reference Concept'.
@@ -70,7 +77,7 @@ def extract_json_object(resp_text):
         pass
     return None
 
-def align_concept(doc_node, definition, ref_nodes_text, client):
+def align_concept(doc_node, definition, ref_nodes_text):
     prompt = f"""
     Document Concept: '{doc_node}'
     Definition: '{definition}'
@@ -78,7 +85,6 @@ def align_concept(doc_node, definition, ref_nodes_text, client):
     Available Reference Concepts:
     {ref_nodes_text}
     """
-    last_error = None
     for attempt in range(1, MAX_TRANSPORT_ATTEMPTS + 1):
         executor = ThreadPoolExecutor(max_workers=1)
         try:
@@ -98,14 +104,18 @@ def align_concept(doc_node, definition, ref_nodes_text, client):
                 raise ValueError(f"Invalid alignment payload for node: {doc_node}")
             return result
         except Exception as e:
-            last_error = e
             if attempt < MAX_TRANSPORT_ATTEMPTS:
                 wait = (min(60, 2 ** attempt) + random.uniform(0, 2)) if _is_transient(e) else 2
                 time.sleep(wait)
                 continue
             raise RuntimeError(f"M4 alignment failed for '{doc_node}' after {attempt} attempts: {e}") from e
-        finally:
-            executor.shutdown(wait=False, cancel_futures=True)
+
+def align_safe(node, defn, ref_list):
+    """Never raises: returns (node, result_dict, error_or_None). Runs in a worker thread."""
+    try:
+        return node, align_concept(node, defn, ref_list), None
+    except Exception as e:
+        return node, {"status": "Unmapped (Error)", "target": ""}, str(e)[:80]
 
 def run_m4_alignment():
     if not os.path.exists(INPUT_DATA_GRAPH):
@@ -128,7 +138,6 @@ def run_m4_alignment():
     ref_node_set = set(G_ref.nodes)
     print(f"-> M4 alignment vocabulary: {ref_candidates_seen} BIZBOK concepts visible to LLM")
 
-    # RESUME: reuse a partial hybrid if present; otherwise compose fresh.
     if os.path.exists(OUTPUT_GRAPH):
         print(f"-> Resuming from partial hybrid {OUTPUT_GRAPH}")
         G_hybrid = nx.read_graphml(OUTPUT_GRAPH)
@@ -138,60 +147,67 @@ def run_m4_alignment():
         G_hybrid = nx.compose(G_doc, G_ref)
 
     doc_nodes = [n for n in G_doc.nodes if n not in ref_node_set]
-    print(f"Aligning {len(doc_nodes)} Document Concepts...")
 
-    aligned_count = failed_count = resumed = processed = 0
-    for i, node in enumerate(doc_nodes):
+    # partition: resume-skip / low-conf (no LLM) / to_align
+    to_align = []
+    low_conf = 0
+    for node in doc_nodes:
         if str(G_hybrid.nodes[node].get('alignment_status', '')).strip():
-            resumed += 1
-            continue
-
+            continue  # already done (resume)
         defn = G_hybrid.nodes[node].get('definition', '')
         try:
             conf = int(float(G_hybrid.nodes[node].get('confidence', 0)))
         except Exception:
             conf = 0
-
         if conf < 40:
             G_hybrid.nodes[node]['alignment_status'] = "Unmapped (Low Conf)"
             G_hybrid.nodes[node]['alignment_candidates_seen'] = ref_candidates_seen
+            low_conf += 1
             continue
+        to_align.append((node, defn))
 
-        try:
-            result = align_concept(node, defn, ref_list, client)
-        except Exception as e:
-            # a node we can't align is just "Unmapped" — never kill the stage
-            print(f"      [SKIP] '{node}' failed after retries: {str(e)[:80]}")
-            G_hybrid.nodes[node]['alignment_status'] = "Unmapped (Error)"
+    print(f"Aligning {len(to_align)} concepts concurrently ({MAX_WORKERS} workers); "
+          f"{low_conf} low-conf skipped without LLM.")
+
+    results_fp = open(RESULTS_LOG, "a", encoding="utf-8")
+    aligned_count = failed_count = processed = 0
+
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
+        futures = [pool.submit(align_safe, node, defn, ref_list) for node, defn in to_align]
+        for fut in as_completed(futures):
+            node, result, err = fut.result()          # completes in MAIN thread
+            status = result.get('status', 'Unmapped')
+            target = result.get('target', '')
+
+            # ----- graph mutation: MAIN THREAD ONLY (same logic as serial) -----
+            if err:
+                G_hybrid.nodes[node]['alignment_status'] = "Unmapped (Error)"
+                failed_count += 1
+            elif status in ["Match", "Adaptive"] and target in ref_node_set:
+                G_hybrid.add_edge(node, target, key=f"Align_{node}_{target}",
+                                  predicate="IS_ALIGNED_WITH", type="Governance", weight=1.0)
+                G_hybrid.nodes[node]['alignment_status'] = status
+                aligned_count += 1
+            else:
+                G_hybrid.nodes[node]['alignment_status'] = "Unmapped"
             G_hybrid.nodes[node]['alignment_candidates_seen'] = ref_candidates_seen
-            failed_count += 1
+
+            results_fp.write(json.dumps({"node": node, "status": status, "target": target}) + "\n")
             processed += 1
+            if processed % 10 == 0 or err:
+                print(f"[{processed}/{len(to_align)}] Evaluated '{node}': {status} -> {target}"
+                      + (f"  [SKIP:{err}]" if err else ""))
             if processed % CHECKPOINT_EVERY == 0:
-                nx.write_graphml(G_hybrid, OUTPUT_GRAPH); print(f"      [checkpoint] {processed} processed")
-            continue
+                results_fp.flush()
+                nx.write_graphml(G_hybrid, OUTPUT_GRAPH)
+                print(f"      [checkpoint] {processed} processed")
 
-        status = result.get('status', 'Unmapped')
-        target = result.get('target', '')
-        print(f"[{i+1}/{len(doc_nodes)}] Evaluated '{node}': {status} -> {target}")
-
-        if status in ["Match", "Adaptive"] and target in ref_node_set:
-            G_hybrid.add_edge(node, target, key=f"Align_{node}_{target}",
-                              predicate="IS_ALIGNED_WITH", type="Governance", weight=1.0)
-            G_hybrid.nodes[node]['alignment_status'] = status
-            aligned_count += 1
-        else:
-            G_hybrid.nodes[node]['alignment_status'] = "Unmapped"
-        G_hybrid.nodes[node]['alignment_candidates_seen'] = ref_candidates_seen
-
-        processed += 1
-        if processed % CHECKPOINT_EVERY == 0:
-            nx.write_graphml(G_hybrid, OUTPUT_GRAPH); print(f"      [checkpoint] {processed} processed")
-        time.sleep(RATE_LIMIT_DELAY)
-
+    results_fp.close()
     nx.write_graphml(G_hybrid, OUTPUT_GRAPH)
     print("\n" + "=" * 50)
-    print(f"M4 COMPLETE. Aligned: {aligned_count} | Unmapped-error: {failed_count} | resumed-skip: {resumed}")
-    print(f"Artifact: {OUTPUT_GRAPH}")
+    print(f"M4 PARALLEL COMPLETE. Aligned: {aligned_count} | Unmapped-error: {failed_count} | low-conf: {low_conf}")
+    print(f"Graph:   {OUTPUT_GRAPH}")
+    print(f"Results: {RESULTS_LOG}")
     print("=" * 50)
 
 if __name__ == "__main__":
