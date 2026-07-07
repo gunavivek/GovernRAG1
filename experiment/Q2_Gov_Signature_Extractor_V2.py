@@ -13,7 +13,7 @@ client = genai.Client(api_key=api_key)
 
 # PhD Strategy: Small model (Gemma) proves that governance-bounded 
 # tasks do not require massive LLMs, optimizing for efficiency.
-MODEL_ID = "gemma-3-4b-it"
+MODEL_ID = "gemini-3.5-flash"
 
 INPUT_FILE = "output/Q1_intent_gate.jsonl"
 OUTPUT_FILE = "output/Q2_signatures.jsonl"
@@ -29,7 +29,15 @@ class GovernedSignatureExtractorV2:
               "Identity": ["name", "founder", "author", "creator"],
               "General_Relation": ["name", "description"]
         }
-    def _distill_concepts(self, text: str, active_domains: List[str]) -> List[str]:
+        # --- Option B: graph-grounded anchor linking (design-A scoped) ---
+        # Enabled iff the scoped-vocab artifact is present; else frozen behavior.
+        self.scoped_vocab = None
+        _sv = os.path.join("output", "serve_scoped_vocab.json")
+        if os.path.exists(_sv):
+            with open(_sv, encoding="utf-8") as _f:
+                self.scoped_vocab = json.load(_f)   # {record_id: [node_name, ...]}
+            print(f"[Q2] Anchor linking ON: scoped node vocab for {len(self.scoped_vocab)} questions")
+    def _distill_concepts(self, text: str, active_domains: List[str], record_id: str = None) -> List[str]:
         """
         PRESERVED V1 LOGIC: Pattern-Aware Concept Distillation.
         Extracts entities, quoted strings, and numbers as Graph Search Anchors.
@@ -51,6 +59,15 @@ class GovernedSignatureExtractorV2:
                     continue
                 concepts.append(word)
         
+        # 3b. GRAPH-GROUNDED ANCHOR LINKING (design-A scoped) -- additive; fallback-safe.
+        if self.scoped_vocab is not None and record_id is not None:
+            q_lower = text.lower()
+            for name in self.scoped_vocab.get(str(record_id), []):
+                nl = str(name).lower().strip()
+                if len(nl) >= 4 and re.search(r"\b" + re.escape(nl) + r"\b", q_lower):
+                    if name not in concepts:
+                        concepts.append(name)
+
         # 4. DOMAIN ANCHORING
         for domain in active_domains:
             if domain not in concepts:
@@ -81,16 +98,29 @@ class GovernedSignatureExtractorV2:
         3. Return ONLY a valid JSON list of strings. No conversation.
         """
 
-        try:
-            response = client.models.generate_content(
-                model=MODEL_ID,
-                contents=mapping_prompt,
-                config=types.GenerateContentConfig(temperature=0.0) # Zero temp for DSR reproducibility
-            )
-            clean_res = response.text.strip().replace("```json", "").replace("```", "")
-            return json.loads(clean_res)
-        except Exception as e:
-            raise RuntimeError(f"Dynamic Mapping Failure: {e}") from e
+        import time as _time
+        last_err = None
+        for _attempt in range(3):
+            try:
+                response = client.models.generate_content(
+                    model=MODEL_ID,
+                    contents=mapping_prompt,
+                    config=types.GenerateContentConfig(temperature=0.0)  # Zero temp for DSR reproducibility
+                )
+                clean_res = (response.text or "").strip().replace("```json", "").replace("```", "").strip()
+                try:
+                    val = json.loads(clean_res)
+                except json.JSONDecodeError:
+                    m = re.search(r"\[.*\]", clean_res, re.DOTALL)  # salvage a JSON array if wrapped/truncated
+                    if not m:
+                        raise
+                    val = json.loads(m.group(0))
+                return val if isinstance(val, list) else []
+            except Exception as e:
+                last_err = e
+                _time.sleep(2 * (_attempt + 1))
+        print(f"[Q2][WARN] predicate mapping degraded to [] (Rule 2) after 3 tries: {last_err}")
+        return []
 
     def process(self):
         print("--- Q2 V2: Governed Signature Extractor (Frozen State) ---")
@@ -122,7 +152,8 @@ class GovernedSignatureExtractorV2:
                 )
 
                 # Execute Concept Distillation
-                target_nodes = self._distill_concepts(record["question"], active_domains)
+                target_nodes = self._distill_concepts(
+                    record["question"], active_domains, record_id=record.get("record_id"))
 
                 # Assemble the Enhanced Signature (The Search Warrant)
                 signature = {

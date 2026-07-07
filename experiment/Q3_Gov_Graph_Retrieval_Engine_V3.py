@@ -50,34 +50,56 @@ class GovGraphRetrievalEngineV3:
                     anchors.append(node_id)
         return list(set(anchors))
 
-    def _get_semantic_text_with_ids(self, record_id: str) -> tuple:
-        """Retrieves raw governed text chunks for final Q5 synthesis."""
+    def _get_semantic_text_with_ids(self, record_id: str, chunk_ids=None) -> tuple:
+        """Raw governed text chunks for Q5 (design-A aware: filter by chunk_ids if given)."""
         if self.m1_df is not None:
-            target = str(record_id).strip()
-            matches = self.m1_df[self.m1_df['record_id'] == target]
+            if chunk_ids is not None:
+                matches = self.m1_df[self.m1_df['chunk_id'].isin(set(map(str, chunk_ids)))]
+            else:
+                matches = self.m1_df[self.m1_df['record_id'] == str(record_id).strip()]
             if not matches.empty:
-                chunk_ids = matches['chunk_id'].tolist()
+                cids = matches['chunk_id'].tolist()
                 labeled_segments = [f"[{row['chunk_id']}]: {row['chunk_text']}" for _, row in matches.iterrows()]
-                return " ".join(labeled_segments), chunk_ids
-        raise ValueError(f"record_id {record_id} missing in M1 chunks")
+                return " ".join(labeled_segments), cids
+        raise ValueError(f"record_id {record_id} / chunks {chunk_ids} missing in M1 chunks")
 
     def _get_isolated_subgraph(self, record_id: str) -> tuple:
-        """
-        PHD COMPONENT: Epistemic Isolation.
-        Strictly prunes the global M5 graph to only include edges 
-        belonging to the authorized research record.
-        """
+        """Epistemic Isolation. Design-A: scope to the question's OWN chunk_ids
+        (output/serve_chunk_filter.json) when present; else original record_id isolation."""
+        import json as _json
+        if not hasattr(self, "_chunk_filter"):
+            self._chunk_filter = None
+            _cf = os.path.join("output", "serve_chunk_filter.json")
+            if os.path.exists(_cf):
+                with open(_cf, encoding="utf-8") as _f:
+                    self._chunk_filter = _json.load(_f)
+                print(f"[Q3] Design-A serve mode: {len(self._chunk_filter)} question filters loaded")
+
+        def _edge_cid(data, key):
+            for a in ("chunk_id", "source_chunk_id"):
+                if data.get(a):
+                    return str(data[a])
+            fk = str(data.get("forensic_key") or key or "")
+            parts = fk.split("_")
+            return parts[-2] if len(parts) >= 2 else ""
+
+        if self._chunk_filter is not None and str(record_id) in self._chunk_filter:
+            wanted = set(map(str, self._chunk_filter.get(str(record_id), [])))
+            relevant_edges = [(u, v, k) for u, v, k, data in self.G.edges(keys=True, data=True)
+                              if _edge_cid(data, k) in wanted]
+            if not relevant_edges:
+                raise ValueError(f"No edges for question {record_id} ({len(wanted)} chunk ids) -- _edge_cid attr wrong?")
+            source_text, chunk_ids = self._get_semantic_text_with_ids(record_id, chunk_ids=wanted)
+            return self.G.edge_subgraph(relevant_edges).copy(), source_text, chunk_ids
+
         relevant_edges = []
         for u, v, k, data in self.G.edges(keys=True, data=True):
             edge_rid = data.get("record_id") or data.get("source_chunk_id")
             if str(edge_rid) == str(record_id):
                 relevant_edges.append((u, v, k))
-        
         if not relevant_edges:
             raise ValueError(f"No graph data found in M5 for record_id={record_id}")
-        
         source_text, chunk_ids = self._get_semantic_text_with_ids(record_id)
-        # Returns a copy to prevent accidental global graph modification
         return self.G.edge_subgraph(relevant_edges).copy(), source_text, chunk_ids
 
     def _perform_governed_walk(self, local_graph: nx.Graph, anchors: List[str], 
@@ -93,15 +115,21 @@ class GovGraphRetrievalEngineV3:
         for hop in range(k_hops):
             next_layer = set()
             for u in current_layer:
-                # Support both directed and undirected traversal for robustness
-                edges = local_graph.out_edges(u, data=True) if local_graph.is_directed() else local_graph.edges(u, data=True)
-                for _, v, data in edges:
+                # Bidirectional traversal (generic): a query entity may be the SUBJECT or the
+                # OBJECT of a governed relation; follow in+out edges, preserving true s->o direction.
+                if local_graph.is_directed():
+                    cand = [(u, v, data) for _, v, data in local_graph.out_edges(u, data=True)]
+                    cand += [(w, u, data) for w, _, data in local_graph.in_edges(u, data=True)]
+                else:
+                    cand = [(u, v, data) for _, v, data in local_graph.edges(u, data=True)]
+                for s_node, o_node, data in cand:
                     p_label = data.get('predicate', 'related_to')
-                    # PhD Logic: Predicate Pruning
+                    # PhD Logic: Predicate Pruning (direction-agnostic reachability)
                     if not predicates or any(p.lower() in p_label.lower() for p in predicates):
-                        discovered_triples.add((u, p_label, v))
-                        if v not in visited_nodes:
-                            next_layer.add(v)
+                        discovered_triples.add((s_node, p_label, o_node))
+                        neighbor = o_node if s_node == u else s_node
+                        if neighbor not in visited_nodes:
+                            next_layer.add(neighbor)
             current_layer = next_layer
             visited_nodes.update(next_layer)
             if not current_layer: break
@@ -142,7 +170,14 @@ class GovGraphRetrievalEngineV3:
                     record["traversal_parameters"]["k_hops"]
                 )
                 
-                new_triplets = [{"s": t[0], "p": t[1], "o": t[2]} for t in triples]
+                new_triplets = []
+                for t in triples:
+                    trip = {"s": t[0], "p": t[1], "o": t[2]}
+                    s_data = self.G.nodes[t[0]] if self.G.has_node(t[0]) else {}
+                    o_data = self.G.nodes[t[2]] if self.G.has_node(t[2]) else {}
+                    trip["s_align"] = s_data.get("alignment_status", "Unknown")
+                    trip["o_align"] = o_data.get("alignment_status", "Unknown")
+                    new_triplets.append(trip)
                 
                 # 4. Persistence
                 self._update_output_file(record_id, chunk_ids, semantic_chunk, new_triplets, record)

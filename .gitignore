@@ -19,3 +19,10 @@ Documentation/
 __pycache__/
 *.pyc
 graphrag_base/
+*.bak*
+index/
+output/
+results/
+__pycache__/
+*.pyc
+*.log

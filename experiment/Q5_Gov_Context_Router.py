@@ -12,6 +12,32 @@ D5_MANIFEST_PATH = os.path.join(PROJECT_ROOT, "output", "D5_Extraction_Manifest.
 Q3_EVIDENCE_PATH = os.path.join(PROJECT_ROOT, "output", "Q3_retrieved_evidence.jsonl")
 Q5_OUTPUT_PATH = os.path.join(PROJECT_ROOT, "output", "Q5_routed_context.jsonl")
 
+import csv as _csv
+import glob as _glob
+_WA_CACHE = None
+def _load_wa_scores():
+    """chunk_id -> wa_score from M1_Governed_Chunks.csv (Axis B: domain affinity)."""
+    global _WA_CACHE
+    if _WA_CACHE is not None:
+        return _WA_CACHE
+    _WA_CACHE = {}
+    _cands = [os.path.join(PROJECT_ROOT, "output", "M1_Governed_Chunks.csv")]
+    _cands += sorted(_glob.glob(os.path.join(PROJECT_ROOT, "index", "*", "M1_Governed_Chunks.csv")))
+    _cands += sorted(_glob.glob(os.path.join(PROJECT_ROOT, "index", "**", "M1_Governed_Chunks.csv"), recursive=True))
+    _path = next((c for c in _cands if os.path.exists(c)), None)
+    if _path:
+        _csv.field_size_limit(10_000_000)
+        with open(_path, encoding="utf-8") as _f:
+            for _row in _csv.DictReader(_f):
+                try:
+                    _WA_CACHE[_row.get("chunk_id") or ""] = float(_row.get("wa_score"))
+                except (TypeError, ValueError):
+                    pass
+        print("  [Axis B] wa_scores loaded from %s (%d chunks)" % (_path, len(_WA_CACHE)))
+    else:
+        print("  [Axis B][WARN] no M1_Governed_Chunks.csv found; affinity filter is a no-op")
+    return _WA_CACHE
+
 class GovContextRouter:
     """
     PHD COMPONENT: Q5 - The Governed Synthesis Router (The Supreme Court)
@@ -45,10 +71,14 @@ class GovContextRouter:
         for profile in d5_contract.get("governance_profile", []):
             preds = profile.get("rules", {}).get("relational_predicates", [])
             allowed_predicates.update([p.lower() for p in preds])
+        if os.getenv("GOVRAG_LEVEL", "G3") == "G1":
+            allowed_predicates = set()  # G1: no authorization filter -> keep all evidence
 
         # 2. AUDIT TRIPLETS (Strict Negative Constraint)
         raw_triplets = evidence_packet.get("symbolic_triplets", [])
         governed_triplets = []
+        _ont_dropped = 0
+        _aff_dropped = 0
         
         if allowed_predicates:
             for t in raw_triplets:
@@ -58,6 +88,21 @@ class GovContextRouter:
                     governed_triplets.append(t)
         else:
             governed_triplets = raw_triplets
+
+        # --- Axis A: reference-ontology conformance (env GOVRAG_ONTOLOGY; default all=off) ---
+        _ont = os.getenv("GOVRAG_ONTOLOGY", "all").lower()
+        if _ont in ("conformant", "not_unmapped"):
+            def _conf(v):
+                v = str(v or "Unknown").lower()
+                if _ont == "not_unmapped":
+                    return "unmapped" not in v
+                return v in ("match", "adaptive")
+            _before = len(governed_triplets)
+            governed_triplets = [t for t in governed_triplets
+                                 if _conf(t.get("s_align")) and _conf(t.get("o_align"))]
+            _ont_dropped = _before - len(governed_triplets)
+            print(f"  [Axis A] ontology=%s dropped %d non-conformant triplets"
+                  % (_ont, _ont_dropped))
 
         dropped_triplets = len(raw_triplets) - len(governed_triplets)
 
@@ -100,6 +145,21 @@ class GovContextRouter:
             governed_primary_chunks = primary_pieces
 
         # Re-assemble only the surviving Tier 1 chunks
+        # --- Axis B: domain-affinity gate (env GOVRAG_AFFINITY_MIN; default 0=off) ---
+        _amin = float(os.getenv("GOVRAG_AFFINITY_MIN", "0") or 0)
+        if _amin > 0:
+            _wa = _load_wa_scores()
+            _kept = []
+            for _piece in governed_primary_chunks:
+                _m = re.search(r"\[(CHNK_[^\]]+)\]", _piece)
+                _sc = _wa.get(_m.group(1)) if _m else None
+                if _sc is None or _sc >= _amin:
+                    _kept.append(_piece)
+            _aff_dropped = len(governed_primary_chunks) - len(_kept)
+            print(f"  [Axis B] affinity>=%.3f dropped %d low-affinity chunks"
+                  % (_amin, _aff_dropped))
+            governed_primary_chunks = _kept
+
         filtered_semantic_chunk = "\n".join(governed_primary_chunks)
 
         dropped_chunks = (len(primary_pieces) - len(governed_primary_chunks)) + (len(raw_residual) - len(governed_residual_chunks))
@@ -128,7 +188,18 @@ class GovContextRouter:
             "allowed_predicates_enforced": list(allowed_predicates),
             "triplets_dropped": dropped_triplets,
             "chunks_dropped": dropped_chunks,
-            "chunk_decision_log": chunk_audit_log 
+            "chunk_decision_log": chunk_audit_log,
+            "evidence_reduction": {
+                "level": os.getenv("GOVRAG_LEVEL", "G3"),
+                "ontology_mode": os.getenv("GOVRAG_ONTOLOGY", "all"),
+                "affinity_min": float(os.getenv("GOVRAG_AFFINITY_MIN", "0") or 0),
+                "predicate_triplets_dropped": dropped_triplets - _ont_dropped,
+                "ontology_triplets_dropped": _ont_dropped,
+                "affinity_chunks_dropped": _aff_dropped,
+                "chunks_dropped_total": dropped_chunks,
+                "triplets_kept": len(governed_triplets),
+                "primary_chunks_kept": len(governed_primary_chunks),
+            },
         }
 
         return routed_packet

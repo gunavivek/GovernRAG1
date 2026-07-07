@@ -13,7 +13,7 @@ client = genai.Client(api_key=api_key)
 
 # PhD Strategy: Gemma-3 is used here as a "Governed Narrator." 
 # It is structurally forbidden from hallucinating outside the Tiered Evidence.
-MODEL_ID = "gemma-3-4b-it"
+MODEL_ID = "gemini-3.5-flash"
 
 # CRITICAL UPDATE: Q6 now reads the legally routed packet from Q5
 INPUT_FILE = "output/Q5_routed_context.jsonl"
@@ -41,7 +41,17 @@ def generate_governed_answer(record: dict) -> dict:
 
     # --- GOVERNANCE GATE 1: EMPIRICAL EXISTENCE CHECK ---
     # If Q5 stripped EVERYTHING because it was invalid, we must block generation.
-    if not triplets and not residual_chunks:
+    LEVEL = os.getenv("GOVRAG_LEVEL", "G3")   # governance spectrum; default G3 = current
+    _nt = len(triplets); _hc = bool(str(text_chunk).strip()); _hr = bool(residual_chunks)
+    if LEVEL == "G4":
+        _allow = _nt >= 2
+    elif LEVEL == "G2":
+        _allow = _nt >= 1 or _hc or _hr
+    elif LEVEL == "G1":
+        _allow = _nt >= 1 or _hc or _hr
+    else:
+        _allow = _nt >= 1 or _hr
+    if not _allow:
         return {
             "record_id": record_id,
             "question": question,
