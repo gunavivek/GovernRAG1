@@ -14,9 +14,12 @@ STAGE ORCHESTRATION (confirmed against frozen code):
 
 RUN
   python B2_Serve.py --records ...\delucionqa_records.csv --sample 20
+  python B2_Serve.py --records ...\delucionqa_records_912.csv --offset 25 --limit 25   # batch slice
 """
-import argparse, csv, json, os, subprocess, sys
+import argparse, csv, json, os, subprocess, sys, time
 from pathlib import Path
+
+STAGE_TIMINGS = []  # (stage, script, arg, seconds, ok) -- written to results/serve_stage_timings.jsonl
 
 csv.field_size_limit(10_000_000)
 
@@ -46,7 +49,7 @@ Q_STAGES = [
 ]
 
 
-def load_questions(records_csv, serve_map, limit=None, sample=None, seed=13):
+def load_questions(records_csv, serve_map, limit=None, sample=None, seed=13, offset=0):
     chunkmap = {}
     with open(serve_map, encoding="utf-8") as f:
         for line in f:
@@ -58,8 +61,11 @@ def load_questions(records_csv, serve_map, limit=None, sample=None, seed=13):
         import random
         random.seed(seed)
         rows = random.sample(rows, min(sample, len(rows)))
-    elif limit:
-        rows = rows[:limit]
+    else:
+        if offset:
+            rows = rows[offset:]
+        if limit:
+            rows = rows[:limit]
     qs = []
     for i, row in enumerate(rows):
         idx = str(row.get("idx", i))
@@ -103,7 +109,11 @@ def run_stage(name, script, arg=None):
     if not p.exists():
         print("[WARN] %s: %s not found (adjust Q_STAGES)" % (name, p)); return False
     cmd = [sys.executable, "-u", str(p)] + ([arg] if arg else [])
-    return subprocess.run(cmd, cwd=str(ROOT)).returncode == 0
+    t0 = time.perf_counter()
+    ok = subprocess.run(cmd, cwd=str(ROOT)).returncode == 0
+    STAGE_TIMINGS.append({"stage": name, "script": script, "arg": arg,
+                          "seconds": round(time.perf_counter() - t0, 3), "ok": ok})
+    return ok
 
 
 def run_governed_pipeline(qs):
@@ -124,16 +134,25 @@ def run_governed_pipeline(qs):
 
 
 def naive_baseline(question, context):
+    """Returns (answer, latency_seconds, usage_dict) -- per-question naive cost/latency (metric #7)."""
     from google import genai
     from google.genai import types
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
     prompt = "Instructions: Answer the question based ONLY on the context.\n\nContext: %s\n\nQuestion: %s" % (context, question)
+    t0 = time.perf_counter()
     try:
         r = client.models.generate_content(model=BASELINE_MODEL, contents=prompt,
                                             config=types.GenerateContentConfig(temperature=0.0))
-        return r.text.strip()
+        dt = round(time.perf_counter() - t0, 3)
+        usage = {}
+        try:
+            u = r.usage_metadata
+            usage = {"prompt_tokens": u.prompt_token_count, "output_tokens": u.candidates_token_count}
+        except Exception:
+            pass
+        return r.text.strip(), dt, usage
     except Exception as e:
-        return "ERROR: %s" % e
+        return "ERROR: %s" % e, round(time.perf_counter() - t0, 3), {}
 
 
 def assemble(qs):
@@ -165,11 +184,11 @@ def assemble(qs):
                     "has_citation": has_cite,
                     "governance_ratio": g.get("governance_ratio"),
                 },
-                "naive": {
-                    "answer": naive_baseline(q["question"], q["docs"]),
-                    "context": q["docs"],
-                },
+                "naive": {},
             }
+            n_ans, n_lat, n_use = naive_baseline(q["question"], q["docs"])
+            rowout["naive"] = {"answer": n_ans, "context": q["docs"],
+                               "latency_s": n_lat, "usage": n_use}
             f.write(json.dumps(rowout, ensure_ascii=False) + "\n")
             n += 1
     refused = sum(1 for q in qs if q6.get(q["q_id"], {}).get("mode", "").startswith("BLOCKED"))
@@ -191,13 +210,14 @@ def main():
     ap.add_argument("--records", required=True)
     ap.add_argument("--map", default=str(OUT / "serve_question_chunk_map.jsonl"))
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--offset", type=int, default=0, help="skip the first N records (batch slicing; ignored with --sample)")
     ap.add_argument("--sample", type=int, default=None, help="serve N RANDOM questions")
     ap.add_argument("--seed", type=int, default=13)
     ap.add_argument("--no-linking", action="store_true",
                     help="ablation: skip graph-grounded anchor linking (Q2 reverts to frozen heuristic)")
     args = ap.parse_args()
 
-    qs = load_questions(args.records, args.map, limit=args.limit, sample=args.sample, seed=args.seed)
+    qs = load_questions(args.records, args.map, limit=args.limit, sample=args.sample, seed=args.seed, offset=args.offset)
     print("[B2] serving %d questions from %s" % (len(qs), OUT / "M5_Embedded_Graph.graphml"))
     stage_pipeline_inputs(qs)
     if args.no_linking:
@@ -210,6 +230,11 @@ def main():
     if not run_governed_pipeline(qs):
         sys.exit(1)
     out = assemble(qs)
+    # execution log: per-stage wall time for this serve slice (metric #7 amortized-latency source)
+    with (RESULTS / "serve_stage_timings.jsonl").open("w", encoding="utf-8") as f:
+        f.write(json.dumps({"offset": args.offset, "n_records": len(qs),
+                            "stages": STAGE_TIMINGS}, ensure_ascii=False) + "\n")
+    print("[B2] stage timings -> results/serve_stage_timings.jsonl")
     print("\n[B2] done. Next: python trace_scorer.py --results %s --judge-model gemini-2.5-flash" % out)
 
 
