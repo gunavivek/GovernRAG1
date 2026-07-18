@@ -57,5 +57,15 @@ OneDrive: `…\PhD\3 Dissertation\conceptual_GraphRAG\Documentation\GovRAG\Paper
   (sets 5–6 held pending Dr. Xu before the full run).
 - `4_Harness\` mirrors the repo-root harness scripts — keep the two in sync.
 
+## Artifact policy (binding)
+Never overwrite result-generating artifacts. `output\` + canonical `results\` names are
+TRANSIENT working slots; every run archives to `results\runN_<dataset>\` + `index\<dataset>\`
++ git tag + OneDrive evidence pack BEFORE the next run starts. Paper numbers come only from
+per-run archives. Full policy: PROJECT_STATUS.md.
+
+## Standing rule (Vivek, 2026-07-09)
+Any code change — frozen pipeline OR harness — requires Vivek's explicit approval first.
+Markdown/status/documentation files may be maintained autonomously.
+
 ## Current status
 See PROJECT_STATUS.md (verified 2026-07-09). Session history: RESEARCH_LOG.md.

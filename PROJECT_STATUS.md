@@ -66,6 +66,19 @@
 - GATE: change sets 5–6 (ontology axes, Q3 bidirectional walk) are HELD PENDING DR. XU
   SIGN-OFF before the full (912) run per Frozen_Code_Changes.md.
 
+## Artifact management policy (adopted 2026-07-11; applies to every run)
+Two tiers. TIER 1 — working slots, transient, NEVER cited: `output\` (serve slot) and the
+canonical `results\` filenames that B4/E3 write (overwritten by each run). TIER 2 —
+per-run archives, append-only, the ONLY source for paper numbers:
+- `index\<dataset>\` — one build per corpus (graph, embeddings, build manifest); never overwritten.
+- `results\run1_delucionqa\` (archived 2026-07-11), `results\run2_expertqa\`,
+  `results\run3_hagrid\` — each run's serve results, _spec_* caches, E3 outputs,
+  timing_log/state, run manifest, pip freeze; plus git tag (runN-complete) and an OneDrive
+  evidence pack of the small files.
+CITATION RULE: a number may enter the paper/dissertation only from a Tier-2 folder + its
+manifest. END-OF-RUN CHECKLIST: copy canonical outputs -> runN_<dataset>\; write manifest;
+git tag + push; evidence pack to OneDrive; only then may the next run start.
+
 ## Known discrepancies / cautions
 - The previous session's batch driver was never saved; B4_Batch_Runner.py (2026-07-09) is
   its reconstruction. B2_Serve.py gained --offset the same day.

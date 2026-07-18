@@ -1,0 +1,128 @@
+# Paper 2 — Analysis Plan & Stopping Rule (pre-registration)
+
+**Author:** Vivek  **Date committed:** 2026-07-06
+**Purpose:** lock the run and the reporting *before* seeing results, to protect against
+scope creep and result-driven tuning. This is a commitment, not a plan to revisit.
+
+---
+
+## The commitment (verbatim)
+
+> *"I run the full benchmark once, N≥3, stratified by answerability, on the frozen pipeline
+> (anchor fix included). I report faithfulness, abstention correctness, provenance coverage,
+> and answerable-stratum accuracy — whatever they are — and that is the paper."*
+
+**Report-regardless clause.** The results of the pre-registered run are the paper, whether
+they support, partially support, or refute the hypotheses. A refuting or mixed result is a
+valid Design-Science contribution (an evaluated artifact with characterized boundary
+conditions) and will be reported as such — not tuned away.
+
+---
+
+## Frozen design (locked — no further changes)
+
+- **Pipeline:** R/D/M build (done, `index/delucionqa/`) + frozen Q1–Q6 + Q5 reference monitor.
+- **Only permitted edits already applied & reviewed:** Q2 (anchor-linking + JSON hardening),
+  Q3 (design-A scoping), model lines. Recorded in `Frozen_Code_Changes.md`.
+- **Generation model (parity pair):** Q6 == naive baseline == `gemini-3.5-flash` (GA; pin exact
+  version at run time). Q2 same. **Judge ≠ generation** (`gemini-2.5-flash` or DeBERTa).
+- **Serving:** build-once/serve-many, design-A per-question chunk scoping, anchor-linking ON.
+- **No more pipeline tuning to raise answer rate.** Out of scope for this paper.
+
+---
+
+## Strata (independent of GovernRAG — fixed before the run)
+
+Each question labelled **answerable** / **unanswerable** from an independent source:
+native benchmark answerability field (preferred) → gold-derived → NLI-entailment fallback.
+Labels frozen before serving; never defined by GovernRAG's own refusals.
+
+---
+
+## Metrics (exact) — reported per stratum + overall
+
+1. **Faithfulness (headline).** TRACe **Adherence** (answered tuples only) and **hallucination
+   rate** = answered-but-unsupported / answered. Governed vs naive.
+2. **Abstention correctness.** Unanswerable stratum: % correctly refused (governed vs naive).
+   Answerable stratum: % wrongly refused (recall loss — kept visible, not hidden).
+3. **Provenance coverage.** % governed outputs with source-resolvable `[CHNK_*]`/`[RESIDUAL_*]`.
+4. **Answerable-stratum accuracy (parity).** Correctness (MATCH/NO_MATCH judge) + TRACe
+   Relevance/Utilization/Completeness, governed vs naive, with a stated equivalence bound.
+5. **Selective prediction.** Risk–coverage curve (confidence proxy = Q5 governance ratio /
+   kept-triplet count); governed = curve, naive = single point.
+6. **Governance-native (context).** Governance Ratio distribution; decision-log completeness
+   (Q5 audit / Z2–Z3). Naive ≈ 0 by construction.
+7. **Cost + latency.** Per-question $ and seconds, governed vs naive.
+
+## Hypotheses & decision rules (set now)
+
+- **H1 (quality parity, answerable stratum):** supported if governed vs naive difference on
+  accuracy + R/U/C falls within the pre-set equivalence bound (state bound before run, e.g. ±0.05).
+- **H2 (faithfulness superiority):** supported if governed Adherence ≥ naive and governed
+  hallucination rate < naive (report effect size + N≥3 variance).
+- **H3 (selective abstention):** supported if correct-abstention(unanswerable) ≫ naive AND
+  wrong-refusal(answerable) is low. If wrong-refusal is high → reported as the coverage-cost finding.
+- **H4 (auditability):** supported if provenance + decision-log coverage ≈ 100% for governed.
+
+---
+
+## Scale & runs
+
+- **N ≥ 3** independent runs (temp-0 nondeterminism); report **mean ± sd**.
+- Scale: 20 (smoke, done) → validate ruler on ~50–100 → **full benchmark once**.
+- Corpora: DelucionQA first (built); Emanual next if time permits; FinQA/CUAD = future work.
+
+---
+
+## Measurement layer to finish BEFORE the pre-registered run (bounded; not design changes)
+
+1. Fix `gold` loading + pull native **answerability** label from source data.
+2. Stratified reporting in `trace_scorer` (answerable/unanswerable split).
+3. Adherence scored on answered tuples only.
+4. Risk–coverage from existing signals; per-run cost/latency logging.
+
+These build the *ruler*; none alters governance logic. When (1)–(4) pass a sanity check on
+~50 questions (naive accuracy is non-zero and plausible), the ruler is trusted and the
+pre-registered full run proceeds.
+
+---
+
+## Deviation policy
+
+Any change after this point (pipeline, metric, stratum, model) is **logged with date + reason**
+in this file before it is made. Silent changes are not permitted. If a deviation is required to
+fix a *measurement* bug, that is allowed and logged; a deviation to improve *results* is not.
+
+## Deviation log
+- **2026-07-06 — Gold + answerability source (measurement fix).** The served CSV had no gold/answerability
+  columns (empty-`gold` bug). Gold answer + answerability label (`adherence_score`) now joined from
+  RAGBench `delucionqa_questions.jsonl` by question (100% coverage). `build_gold_map.py` + `trace_scorer` join.
+- **2026-07-06 — Judge model gemini-2.5-flash → gemini-2.5-pro (measurement fix).** Flash mis-scored
+  "answer contains the gold fact" cases as NO_MATCH (e.g. the ABS answer). Pro judge is correct and still
+  independent of the gemini-3.5-flash generator. Pro is the locked judge for the pre-registered run.
+- **2026-07-06 — N corrected 1826 → 913 (data-artifact fix).** Records CSV duplicated each question ×2;
+  effective unique N = 913. Full run dedups to 913.
+- **2026-07-06 — Governance-level parameter added to Q6 + Q5 (new experimental axis, PILOT).**
+  `GOVRAG_LEVEL` (G0–G4) parameterizes the Q6 answer gate and a Q5 filter toggle (G1). DEFAULT unset =
+  G3 = exactly prior behavior (verified). This ADDS an experimental variable (governance spectrum),
+  it does NOT tune the STRICT result. Reversible (`.bakL`, patchers `apply_q6_levels.py`/`apply_q5_g1.py`).
+  Pilot on 20 Q to see the frontier; production use pending Dr. Xu sign-off (governance semantics).
+- **2026-07-09 — N corrected 913 → 912 (data-artifact fix).** Actual unique-question count of the
+  records export is 912 ({2:911, 4:1} duplication; one question appears 4× with divergent context,
+  first occurrence kept). Frozen benchmark input: `data/delucionqa_records_912.csv`
+  (see `Benchmark_Input_Provenance.md`). Change sets 5–6 signed off by Dr. Xu (relayed 2026-07-09);
+  full run executed 2026-07-09/10 (RUN 1, results in `6_Results/Full_Benchmark_Run1_Results.md`).
+- **2026-07-12 — REPLICATION DESIGN AMENDED (cost-motivated; decided BEFORE runs 2–3 execute).**
+  Original commitment: N≥3 full-benchmark repeats on DelucionQA (mean ± sd). Amended to:
+  (a) cross-corpus generalization — runs 2–3 on two additional RAGBench subsets selected by
+  document-reuse (per discussion with Dr. Wang): **ExpertQA** and **HAGRID**, top-50/60 documents,
+  ~100 fully-covered questions each (selection script `ragbench_select_and_prep.py`, deterministic,
+  provenance manifest per selection); (b) statistical treatment of RUN 1 via paired bootstrap
+  confidence intervals over its 912 records (no additional generation). REASON: two further full
+  DelucionQA runs (~$444) exceed the July API spend cap and measure only serve-time variance on one
+  corpus; cross-corpus runs test generalization of the frontier shape at ~1/4 the cost. The run-to-run
+  variance limitation is disclosed (M4 build nondeterminism already quantified in Sprint 1).
+  Communicated to Dr. Xu by email 2026-07-11 with a stated proceed-unless-objection plan; this entry
+  precedes any run-2 execution. Measurement infrastructure for runs 2–3: parallel checkpointed scorer
+  (`E3_Parallel_Evaluation.py`), B4 run-guard with per-run artifact isolation (`--run-tag`),
+  per-run API keys for usage attribution — none alters pipeline or judging logic.
