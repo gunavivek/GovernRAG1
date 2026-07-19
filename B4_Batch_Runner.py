@@ -159,7 +159,7 @@ def main():
     ap.add_argument("--batches", type=int, nargs="*", default=None,
                     help="explicit batch indices to run (default: all remaining)")
     ap.add_argument("--run-e3", action="store_true", help="run E3_Unified_Evaluation.py after the merge")
-    ap.add_argument("--judge-model", default="gemini-2.5-pro")
+    ap.add_argument("--judge-model", default="gemini-3.1-pro-preview")
     ap.add_argument("--no-linking", action="store_true", help="pass through to B2 (ablation)")
     args = ap.parse_args()
 

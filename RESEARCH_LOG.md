@@ -80,3 +80,25 @@
   dropped/record at G2+ with flat accuracy (dissociation confirmed at N=912).
 - Run-1 outputs archived: results\E3_run1_master_eval_log.csv, E3_run1_frontier_summary.csv.
 - NEXT (#38): results section draft; replication decision (N≥3 vs bootstrap memo) w/ Dr. Xu.
+
+
+## 2026-07-19 — Paper/dissertation note: build-model change justification (audit-ready)
+
+For Limitations / any audit question on why runs 2-3 use a different build model than run 1:
+
+> Because Google deprecated the run-1 build models mid-study, run-2/3 indices were built with
+> gemini-3.1-flash-lite (disclosed per-run in the manifests); all hypothesis tests are within-run
+> governed-vs-naive comparisons over a shared index, so build-model variation across runs affects
+> generalization breadth, not internal validity.
+
+Supporting facts (evidence in deviation log + terminal transcripts, logs/ 2026-07-19):
+- H1-H4 are serve-time hypotheses; generation model (gemini-3.5-flash), Q2, and locked judge
+  (gemini-2.5-pro) are identical across runs 1-3. M1/M2 build models are upstream infrastructure.
+- Within every run, governed and naive share the same index -> internal validity unaffected.
+- Runs 2-3 are cross-corpus generalization tests (amended design, logged 2026-07-12), not
+  replications; frontier shape appearing under a different corpus AND build model strengthens
+  the generalization claim.
+- The change was forced (gemini-3-flash-preview degraded to 504 DEADLINE_EXCEEDED; gemini-2.5-flash-lite
+  withdrawn with 404 "no longer available to new users" ~1h after passing an isolation test),
+  disclosed, and timestamped on GitHub BEFORE any run-2 generation. Exact model pinned per run
+  in each Run Manifest. Model deprecation is a recognized reproducibility hazard of LLM-API research.

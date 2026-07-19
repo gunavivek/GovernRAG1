@@ -19,7 +19,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 if not api_key: sys.exit("[CRITICAL] API Key missing.")
 
 client = genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=120_000))  # 120s/call ceiling (approved 2026-07-19)
-LLM_MODEL = "gemini-2.5-flash-lite"  # repointed 2026-07-19: 3-flash-preview endpoint degraded (504 DEADLINE_EXCEEDED); approved, .bakM
+LLM_MODEL = "gemini-3.1-flash-lite"  # repointed 2026-07-19 twice: 3-flash-preview degraded (504), then 2.5-flash-lite withdrawn (404); 3.1-flash-lite = GA pin, probe OK 4.4s; approved, .bakM
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INPUT_MANIFEST = os.path.join(PROJECT_ROOT, "output", "D5_Extraction_Manifest.jsonl")

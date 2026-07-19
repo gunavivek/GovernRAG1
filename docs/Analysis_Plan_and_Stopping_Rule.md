@@ -161,3 +161,37 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   print (observability; no logic or output-content change). DISCLOSURE: run-1's build used the
   preview model, run-2/3 builds use flash-lite — a build-stage infrastructure difference noted in
   all manifests; governance logic, serve models, and judge unchanged.
+- **2026-07-19 (evening) — SECOND MODEL WITHDRAWAL SAME DAY + BUILD-CHAIN AUDIT (infrastructure
+  fixes, approved, still before any run-2/3 generation).** ~1 hour after `gemini-2.5-flash-lite`
+  passed the isolation test (OK 4.1 s), Google withdrew it: 404 "no longer available to new
+  users" on the identical call (B5 caught it in 0.3 min, 3 attempts, ~$0). A four-candidate
+  probe on the real HAGRID slice: 2.5-flash-lite FAIL(404); **3.1-flash-lite OK 4.4 s / 24
+  items**; flash-lite-latest OK 4.6 s (floating alias — rejected for reproducibility);
+  2.5-flash OK but 19.7 s and same sunsetting family. REPAIR: M1 + M2 repointed to
+  **gemini-3.1-flash-lite** (GA version pin). A full model audit across D/M/Q/E pipelines then
+  found (a) the three run-1 hardened build variants (M3.3_HARDENED, M4_PARALLEL, M5_HARDENED)
+  present in the Paper2 harness mirror but absent from the repo `experiment\` — copied in
+  unmodified except (b) M3.3_HARDENED and M4_PARALLEL carried the degraded
+  `gemini-3-flash-preview` — repointed to gemini-3.1-flash-lite (`.bakM` backups). Embedding
+  model (gemini-embedding-001) verified live same day via the D pipeline. Serve model
+  (gemini-3.5-flash) and LOCKED judge (gemini-2.5-pro) to be probed before generation.
+  JUSTIFICATION (for Limitations / audit): because Google deprecated the run-1 build models
+  mid-study, run-2/3 indices are built with gemini-3.1-flash-lite (disclosed per-run in the
+  manifests); all hypothesis tests are within-run governed-vs-naive comparisons over a shared
+  index, so build-model variation across runs affects generalization breadth, not internal
+  validity. H1–H4 are serve-time hypotheses; generation and judge models are unchanged across
+  runs 1–3. Full note in RESEARCH_LOG.md (same date).
+- **2026-07-19 (evening, cont.) — LOCKED JUDGE REPLACED: gemini-2.5-pro → gemini-3.1-pro-preview
+  (measurement-instrument repair, approved, decided BEFORE any run-2/3 judging).** The same
+  model sweep that removed 2.5-flash-lite also withdrew the LOCKED judge `gemini-2.5-pro`
+  (404 "no longer available"). Probe of every pro-tier model visible to the project left two
+  viable candidates; **gemini-3.1-pro-preview** chosen over the `gemini-pro-latest` alias
+  because a locked judge must have a fixed, citable identity — an alias can drift silently
+  mid-study, whereas a pinned model that dies fails loudly and is deviation-logged. Judge
+  independence preserved (judge ≠ generation model gemini-3.5-flash). No frozen code involved:
+  the judge is a CLI argument; harness defaults (E3_Parallel_Evaluation, B4 next-step hint) and
+  the runbook updated. COMPARABILITY REMEDY (approved same day): after run 2 completes, run 1's
+  archived 8,208 serve pairs will be RE-JUDGED with gemini-3.1-pro-preview (judge calls only,
+  no generation) so all runs share one judge; run 1 will be reported under both judges as a
+  judge-robustness check. Within-run governed-vs-naive comparisons — where all hypothesis
+  tests live — are unaffected by the judge change in every run.

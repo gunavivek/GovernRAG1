@@ -16,7 +16,7 @@ if not api_key:
     sys.exit("[CRITICAL] API Key missing.")
 
 client = genai.Client(api_key=api_key)
-LLM_MODEL = "gemini-2.5-flash-lite"
+LLM_MODEL = "gemini-3.1-flash-lite"
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INPUT_FILE = os.path.join(PROJECT_ROOT, "output", "M1_Governed_Chunks.csv")

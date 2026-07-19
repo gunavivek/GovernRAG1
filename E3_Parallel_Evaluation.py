@@ -14,7 +14,7 @@ Adds (measurement-layer only; no frozen code touched):
   4. --out-prefix -- isolate replication runs (e.g. E3_run2) without clobbering run 1.
 
 RUN from repo root:
-  python E3_Parallel_Evaluation.py --judge-model gemini-2.5-pro --workers 6
+  python E3_Parallel_Evaluation.py --judge-model gemini-3.1-pro-preview --workers 6
   python E3_Parallel_Evaluation.py ... --out-prefix E3_run2      # replication
   (interrupted? rerun the same command -- resumes from the checkpoint)
 """
@@ -136,7 +136,7 @@ def score_pair(task, args, types):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--judge-model", default="gemini-2.5-pro")
+    ap.add_argument("--judge-model", default="gemini-3.1-pro-preview")
     ap.add_argument("--serve", default=str(RES / "serve_results.jsonl"))
     ap.add_argument("--gold-map", default=str(RES / "gold_map.json"))
     ap.add_argument("--no-trace", action="store_true")
