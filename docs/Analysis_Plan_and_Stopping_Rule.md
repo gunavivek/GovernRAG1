@@ -126,3 +126,10 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   precedes any run-2 execution. Measurement infrastructure for runs 2–3: parallel checkpointed scorer
   (`E3_Parallel_Evaluation.py`), B4 run-guard with per-run artifact isolation (`--run-tag`),
   per-run API keys for usage attribution — none alters pipeline or judging logic.
+- **2026-07-18 — Selection parameter set K=150 (pre-execution; supersedes the 50/60 estimate).**
+  A K-sweep on both corpora (before any generation) showed K=60 leaves the minority stratum too
+  thin (ExpertQA 15 answerable; HAGRID 12 unanswerable); K=150 yields ExpertQA 176 q (42 P / 134 N)
+  and HAGRID 167 q (141 P / 26 N) at marginal reuse ≈ 1.0 q/doc, the knee of the curve.
+  Representativeness table + complementary-strata rationale: `Subset_Selection_Validity.md` §4.
+  ExpertQA selection executed 2026-07-18 (deterministic; verified identical across two independent
+  executions); NO generation has occurred as of this entry.
