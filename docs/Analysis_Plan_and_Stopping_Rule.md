@@ -149,3 +149,15 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   will be recomputed for every filtered selection. Build hardening added the same day
   (`B5_Build_Runner.py`: stall watchdog, retries, stage checkpoints, corpus/key guards) —
   orchestration only; frozen pipeline untouched.
+- **2026-07-19 (later) — ROOT CAUSE CORRECTED + M1/M2 MODEL REPOINT (measurement/infrastructure
+  fix, approved, before any run-2/3 generation).** Further isolation testing showed the 504
+  DEADLINE_EXCEEDED reproduces on HAGRID's clean first slice too and vanishes entirely under
+  `gemini-2.5-flash-lite` (4.1 s on the identical call): the cause is a DEGRADED
+  `gemini-3-flash-preview` ENDPOINT, not corpus content — the earlier junk-document attribution
+  is likely wrong and will be retested; the junk filter is RETAINED as data hygiene (462 stub/error
+  documents excluded from HAGRID alone). REPAIRS (third model-line repair of the project, same
+  class as the two gemma-404 repointings): M1 + M2 model line → `gemini-2.5-flash-lite`
+  (`.bakM` backups); M1 additionally gains a 120 s per-call HTTP timeout and a per-slice progress
+  print (observability; no logic or output-content change). DISCLOSURE: run-1's build used the
+  preview model, run-2/3 builds use flash-lite — a build-stage infrastructure difference noted in
+  all manifests; governance logic, serve models, and judge unchanged.

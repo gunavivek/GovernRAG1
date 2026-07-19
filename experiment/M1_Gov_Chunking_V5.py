@@ -18,8 +18,8 @@ load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key: sys.exit("[CRITICAL] API Key missing.")
 
-client = genai.Client(api_key=api_key)
-LLM_MODEL = "gemini-3-flash-preview"
+client = genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=120_000))  # 120s/call ceiling (approved 2026-07-19)
+LLM_MODEL = "gemini-2.5-flash-lite"  # repointed 2026-07-19: 3-flash-preview endpoint degraded (504 DEADLINE_EXCEEDED); approved, .bakM
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INPUT_MANIFEST = os.path.join(PROJECT_ROOT, "output", "D5_Extraction_Manifest.jsonl")
@@ -189,9 +189,10 @@ def run_m1_v5_1_focus_mode():
                 physical_slices = [evidence[k:k+window_chars] for k in range(0, text_len, window_chars)]
                 
                 view_chunks = []
-                for p_slice in physical_slices:
+                for si, p_slice in enumerate(physical_slices):
                     c = resolution_based_partitioner(p_slice, view, z_score)
                     view_chunks.extend(c)
+                    print(f"  [slice {si+1}/{len(physical_slices)}] {domain_name}: {len(view_chunks)} chunks", flush=True)
                 
                 # 4. Stapling & ID Generation
                 for j, pocket_text in enumerate(view_chunks):
