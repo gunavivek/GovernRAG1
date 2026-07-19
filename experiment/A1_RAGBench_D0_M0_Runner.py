@@ -29,8 +29,8 @@ from datetime import datetime
 from pathlib import Path
 
 
-CORPORA = ["delucionqa", "emanual"]
-EXPECTED_CHUNKS = {"delucionqa": 930, "emanual": 222}
+CORPORA = ["delucionqa", "emanual", "expertqa_run2", "hagrid_run3"]  # run-2/3 reduced corpora added 2026-07-19 (approved)
+EXPECTED_CHUNKS = {"delucionqa": 930, "emanual": 222, "expertqa_run2": 150, "hagrid_run3": 150}
 
 # --- D5 OVERRIDE POLICY ---
 # When D2 classifies a corpus as ORPHAN, we override the synthesised governance_profile

@@ -1,6 +1,11 @@
 # Run 2 Runbook — ExpertQA (and template for Run 3 — HAGRID)
-*Created 2026-07-12. Execute top to bottom; do not skip. Each ☐ is checked before the next starts.
-All commands from `C:\Users\gunav\repos\conceptual_GraphRAG` with the venv active.*
+*Created 2026-07-12. Execute top to bottom; do not skip. Each ☐ is checked before the next starts.*
+
+**TERMINAL RULE (added 2026-07-19 after the wrong-tree M1 incident): every session starts with**
+`& "C:\Users\gunav\repos\conceptual_GraphRAG\Start-GovRAG.ps1"`
+**and you verify its three printed lines (repo folder · key prefix AIzaSyDhK for run 2 · venv python)
+before typing anything else. CORPUS CHECKPOINT: the first M1 `View:` line must say
+`Record EXPERTQA_CORPUS` — if it names any other corpus, Ctrl+C immediately.**
 
 ## Phase 0 — One-time protections (if not already done)
 - ☐ `attrib +R "results\run1_delucionqa\*" /S` and `attrib +R "index\delucionqa\*" /S`

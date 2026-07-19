@@ -133,3 +133,19 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   Representativeness table + complementary-strata rationale: `Subset_Selection_Validity.md` §4.
   ExpertQA selection executed 2026-07-18 (deterministic; verified identical across two independent
   executions); NO generation has occurred as of this entry.
+- **2026-07-19 — RUN ORDER SWAPPED (HAGRID → run 2, ExpertQA → run 3) + JUNK-DOCUMENT FILTER
+  (data-cleaning, evidence-driven, decided before either corpus generated any results).**
+  The ExpertQA M1 build stalled deterministically on its first content slice; isolation testing
+  reproduced the cause: Google's server returns **504 DEADLINE_EXCEEDED** on the slice opening with
+  the corpus's most-reused document — an NCBI "Access Denied" scraping artifact (already identified
+  and quantified in Subset_Selection_Validity.md §"junk" before the build). The document is
+  machine-unprocessable by the chunking layer itself; retries are futile at temperature 0.
+  AMENDMENTS: (a) selection gains a deterministic `--drop-junk` filter (pre-registered error-page
+  markers + <40-word stubs), recorded per selection manifest; (b) run order swapped — HAGRID
+  (clean wiki-passage text) proceeds first as run 2; ExpertQA retried as run 3 with the filter;
+  CovidQA is the documented fallback if ExpertQA remains unbuildable. Rationale: bank a clean
+  cross-corpus run before re-attempting the risky corpus. The unprocessable-document incident is
+  itself reportable evidence for governance-layer evidence screening. Representativeness tables
+  will be recomputed for every filtered selection. Build hardening added the same day
+  (`B5_Build_Runner.py`: stall watchdog, retries, stage checkpoints, corpus/key guards) —
+  orchestration only; frozen pipeline untouched.

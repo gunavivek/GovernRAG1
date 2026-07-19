@@ -50,6 +50,9 @@ def main():
     ap.add_argument("--top-docs", type=int, default=60)
     ap.add_argument("--parquet-dir", default=str(Path("data") / "parquet"))
     ap.add_argument("--out-dir", default="data")
+    ap.add_argument("--drop-junk", action="store_true",
+                    help="exclude error-page/stub documents (markers pre-registered in "
+                         "Subset_Selection_Validity.md; ExpertQA junk doc verified server-fatal, 504, 2026-07-19)")
     args = ap.parse_args()
 
     import pandas as pd
@@ -88,6 +91,20 @@ def main():
     for i, (_, _, docs, hs) in enumerate(rows):
         for d in docs:
             h = dhash(d); doc_q[h].add(i); doc_text[h] = d
+
+    # optional junk exclusion (deterministic; documented per selection manifest)
+    JUNK_MARKERS = ["access denied", "403 forbidden", "404 not found", "enable javascript",
+                    "captcha", "temporarily blocked", "are you a robot", "cookies to continue"]
+    junk_hashes = []
+    if args.drop_junk:
+        for h, d in doc_text.items():
+            low = str(d).lower()
+            if any(m in low[:400] for m in JUNK_MARKERS) or len(str(d).split()) < 40:
+                junk_hashes.append(h)
+        for h in junk_hashes:
+            doc_q.pop(h, None)   # unselectable -> questions requiring them can never be fully covered
+        print("[prep] --drop-junk: %d document(s) excluded (error pages / <40-word stubs)" % len(junk_hashes))
+
     pending = {i: len(hs) for i, (_, _, _, hs) in enumerate(rows)}
     chosen, covered = [], set()
     cand = sorted(doc_q, key=lambda h: (-len(doc_q[h]), h))[:4000]
@@ -124,6 +141,7 @@ def main():
     with (odir / ("%s_corpus.jsonl" % base)).open("w", encoding="utf-8") as f:
         f.write(json.dumps({"id": "%s_CORPUS" % args.subset.upper(),
                             "question": "CORPUS_INIT",
+                            "dataset": args.subset,   # required by A1/D2 for the D1 baseline lookup
                             "documents": corpus_docs}, ensure_ascii=False) + "\n")
 
     # 2) questions jsonl (D02 columns) for selected questions
@@ -143,6 +161,8 @@ def main():
 
     # 4) selection provenance manifest
     manifest = {"subset": args.subset, "label": args.label, "top_docs": args.top_docs,
+                "drop_junk": bool(args.drop_junk), "junk_docs_excluded": len(junk_hashes),
+                "junk_doc_hashes": junk_hashes,
                 "documents_chosen": len(chosen), "doc_hashes": chosen,
                 "questions_selected": len(sel), "answerable": n_p, "unanswerable": n_n,
                 "source_rows": int(len(df)), "unique_questions_in_subset": len(rows),
