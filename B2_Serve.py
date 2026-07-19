@@ -50,6 +50,9 @@ Q_STAGES = [
 
 
 def load_questions(records_csv, serve_map, limit=None, sample=None, seed=13, offset=0):
+    from pathlib import Path as _P
+    _prefix = _P(records_csv).stem
+    _prefix = _prefix[:-8] if _prefix.endswith("_records") else _prefix  # hagrid_run2_records -> hagrid_run2
     chunkmap = {}
     with open(serve_map, encoding="utf-8") as f:
         for line in f:
@@ -70,7 +73,7 @@ def load_questions(records_csv, serve_map, limit=None, sample=None, seed=13, off
     for i, row in enumerate(rows):
         idx = str(row.get("idx", i))
         qs.append({
-            "q_id": "delucionqa_q%05d" % int(idx),
+            "q_id": "%s_q%05d" % (_prefix, int(idx)),
             "idx": idx,
             "question": row.get("question", ""),
             "gold": row.get("gold", row.get("response", "")),

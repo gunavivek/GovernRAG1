@@ -88,7 +88,12 @@ class GovGraphRetrievalEngineV3:
             relevant_edges = [(u, v, k) for u, v, k, data in self.G.edges(keys=True, data=True)
                               if _edge_cid(data, k) in wanted]
             if not relevant_edges:
-                raise ValueError(f"No edges for question {record_id} ({len(wanted)} chunk ids) -- _edge_cid attr wrong?")
+                # 2026-07-19 (approved): on sparse corpora a question's chunks can yield ZERO
+                # extracted triples -- that is a legitimate governed state (empty evidence
+                # subgraph; chunk text still served; gates decide answer/abstain), not a
+                # config error. Was a fatal raise; hit 24/163 HAGRID questions. .bakQ3
+                print(f"[Q3] Record {record_id} | 0 edges for {len(wanted)} chunk ids "
+                      f"(no triples extracted from these chunks) -- EMPTY evidence subgraph; governance gates decide.")
             source_text, chunk_ids = self._get_semantic_text_with_ids(record_id, chunk_ids=wanted)
             return self.G.edge_subgraph(relevant_edges).copy(), source_text, chunk_ids
 

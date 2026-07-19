@@ -217,3 +217,15 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   chunk — a slight widening (conservative direction; no evidence lost), identical behavior on
   run-1-style corpora where chunks are smaller than documents. Coverage re-verified before the
   smoke batch; preflight re-run.
+- **2026-07-19 (night, cont. 2) — Q3 EMPTY-EVIDENCE STATE + B2 RUN-DERIVED QUESTION IDS
+  (approved; smoke batch 0 surfaced both; before any completed run-2 serving).** (a) FROZEN-CODE
+  fix, Q3 design-A branch: when every chunk mapped to a question yielded ZERO extracted triples
+  (24/163 HAGRID questions — sparse wiki passages; impossible on DelucionQA's ~36 chunks/question),
+  Q3 raised a fatal debug assertion ("_edge_cid attr wrong?"). Replaced with a defined
+  EMPTY-EVIDENCE state: logged, empty evidence subgraph served with the question's real chunk
+  text, downstream governance gates decide answer/abstain exactly as in the already-exercised
+  zero-anchor path. No gate, threshold, walk, or scoring logic changed; a crash became a
+  legitimate governed outcome (`.bakQ3` backup). Empty-evidence frequency will be reported
+  per run. (b) HARNESS fix, B2: question ids were stamped with a hardcoded `delucionqa_q` prefix;
+  now derived from the records filename (`hagrid_run2_q00003`) so run-2/3 artifacts carry
+  truthful provenance ids. Gold joins are by question text; nothing keys on the prefix.
