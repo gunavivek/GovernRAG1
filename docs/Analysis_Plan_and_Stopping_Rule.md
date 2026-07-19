@@ -195,3 +195,25 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   no generation) so all runs share one judge; run 1 will be reported under both judges as a
   judge-robustness check. Within-run governed-vs-naive comparisons — where all hypothesis
   tests live — are unaffected by the judge change in every run.
+- **2026-07-19 (night) — STALE-RESUME CONTAMINATION CAUGHT BEFORE SERVING (build-integrity fix;
+  no results generated or affected).** First hardened HAGRID build pass: M1/M1.5/M2/M3 produced
+  a valid 298-node / 1,143-edge HAGRID graph, but M3.3/M4/M5's crash-resume logic (which keys on
+  output-file existence, not corpus identity) silently "resumed" from run-1 DelucionQA partials
+  still in the `output\` working slot (3,781-node graph; M4_alignment_results.jsonl dated Jul 5)
+  and reported success with zero new work. Detected immediately from the topology mismatch in the
+  live B5 logs. REMEDY: stale partials quarantined to `_quarantine\run1_stale_build_partials\`
+  (run-1 canonical copies remain in the read-only archive), contaminated `index\hagrid_run2`
+  snapshot set aside for deletion, B5 checkpoints for M3.3/M4/M5 reset, stages rerun fresh from
+  the valid M3 output. Run-1 artifacts untouched. Root cause noted for the harness backlog:
+  B5 should quarantine downstream partials whenever the D5 corpus changes.
+- **2026-07-19 (night, cont.) — SERVE-MAP MATCHING MADE BIDIRECTIONAL (measurement-infrastructure
+  fix, approved, before any run-2 serving).** The design-A question→chunk map used one-directional
+  verbatim containment (chunk ⊆ document), correct for DelucionQA's long manuals but wrong for
+  HAGRID's short wiki passages: M1 chunks (median 179, max ~6,000 chars) often span several
+  passages (median 653 chars), so 71 of 73 unmatched documents were documents-inside-a-chunk;
+  question coverage was 50.3%. FIX in `serve_map_questions_to_chunks.py` (harness, not frozen
+  pipeline; `.bak` kept): containment tested in both directions + a windowed-overlap fallback.
+  Effect: retrieval scope for a question may include neighboring-passage text sharing a spanning
+  chunk — a slight widening (conservative direction; no evidence lost), identical behavior on
+  run-1-style corpora where chunks are smaller than documents. Coverage re-verified before the
+  smoke batch; preflight re-run.

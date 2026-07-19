@@ -61,8 +61,15 @@ def main():
     cache = {}
 
     def chunks_for_doc(doc):
+        # BIDIRECTIONAL containment (2026-07-19, approved): short corpora (e.g. HAGRID wiki
+        # passages) yield M1 chunks LARGER than one document, so also match doc-inside-chunk;
+        # windowed fallback catches partial boundary overlaps. Deviation-logged before serving.
         d = norm(doc)
-        return [cid for cid, ct in chunks if ct in d]
+        hits = [cid for cid, ct in chunks if ct in d or d in ct]
+        if not hits:
+            wins = [d[i:i + 120] for i in range(0, max(len(d) - 120, 1), 60)][:8]
+            hits = [cid for cid, ct in chunks if any(w in ct for w in wins)]
+        return hits
 
     out = root / "output" / "serve_question_chunk_map.jsonl"
     q_total = q_hit = doc_total = unmapped = 0
