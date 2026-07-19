@@ -1,4 +1,5 @@
 # Subset Selection Validity — Runs 2–3 (ExpertQA, HAGRID)
+*Updated 2026-07-19: HAGRID K=150 representativeness table added (run-order swap: HAGRID is now Run 2).*
 *Methodological justification for reduced-corpus evaluation. Drafted 2026-07-18, before Run-2
 execution. Source for the paper's Methods (corpus construction) and Limitations sections.
 Pairs with: Analysis_Plan_and_Stopping_Rule.md (deviation entry 2026-07-12),
@@ -71,6 +72,26 @@ divergences, both structural and disclosed: (a) **answerability skew** (23.9% vs
 answerable) — ExpertQA's most-reused documents attract unanswerable expert questions;
 (b) **docs-per-question** (1.1 vs 3.7) — full-cover selection inherently favors
 few-document questions.
+
+**Run 2 — HAGRID, K=150 with `--drop-junk` (computed 2026-07-19, selection of 163 of 2,638;
+462 error-page/stub documents excluded before selection per the pre-registered junk filter):**
+
+| Observable | Selected (163) | Population (2,638) |
+|---|---|---|
+| Answerable share | 84.0% | 85.5% |
+| Question length (words, mean) | 6.9 | 6.9 |
+| Gold answer length (words, mean) | 23.1 | 36.4 |
+| Gold relevance (mean) | 0.3 | 0.3 |
+| Gold utilization (mean) | 0.3 | 0.2 |
+| Gold completeness (mean) | 0.9 | 0.8 |
+| Documents per question (mean) | 1.0 | 2.7 |
+| Split mix (train/val/test) | 107/4/52 | 1,846/76/716 |
+
+READ: the HAGRID selection mirrors its population on answerability (84.0% vs 85.5%), question
+length (identical), and all three gold quality annotations — the parity-probe role holds. Two
+divergences, both structural and disclosed: (a) shorter gold answers (23.1 vs 36.4 words) —
+most-reused wiki passages attract factoid-style questions; (b) documents-per-question 1.0 vs
+2.7 — the same full-cover artifact as ExpertQA, inherent to any bounded-build selection.
 
 **Complementary-strata design (K-sweep evidence, both corpora):** the skew is turned into a
 design feature. ExpertQA selections are N-heavy at every K (17–26% answerable, K=60..300)
