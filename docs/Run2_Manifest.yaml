@@ -1,0 +1,45 @@
+# Run 2 Manifest — HAGRID (GovernRAG Paper 2)
+run_id: run2_hagrid
+executed: 2026-07-19 (build 16:35–17:49 CDT after model migration; serve 17:5x–19:0x; judging 19:1x–21:0x incl. two invalidated passes)
+status: COMPLETE_SEALED   # git tag run2-complete
+
+corpus:
+  source: RAGBench HAGRID (train+validation+test, 2,638 unique questions)
+  selection: K=150 greedy full-cover by document reuse, --drop-junk (462 junk docs excluded)
+  questions: 163  (answerable 137 / unanswerable 26)
+  files:
+    selection_manifest: data/hagrid_run2_selection.json   # sha256 b154d430dfd8609b…
+    records: data/hagrid_run2_records.csv                 # sha256 6a64727481f5a7d0…
+  representativeness: Subset_Selection_Validity.md §4 (mirrors population: 84.0% vs 85.5% answerable)
+
+models:
+  build_m1_m2_m33_m4: gemini-3.1-flash-lite   # repointed 2026-07-19 after Google withdrew
+                                              # gemini-2.5-flash-lite and degraded 3-flash-preview (deviation log)
+  embeddings: gemini-embedding-001
+  serve_generation_and_naive: gemini-3.5-flash
+  judge: gemini-3.1-pro-preview               # locked successor judge; replaced withdrawn gemini-2.5-pro (deviation log)
+
+infrastructure:
+  build: B5_Build_Runner (guards+watchdog); STALE-RESUME INCIDENT: first pass resumed run-1
+    partials for M3.3/M4/M5 — detected from topology, quarantined, stages rebuilt fresh
+    (deviation log 2026-07-19 night). Final build: M1 3.8 min, chain total ~25 min.
+  index_snapshot: index/hagrid_run2/ (851 nodes / 5,815 edges; build_manifest.json; read-only)
+  serve: B4 run-tag run2_hagrid, 7 batches, K=25; serve map = bidirectional containment fix
+    (coverage 50.3%→100%, deviation-logged pre-serving); Q3 empty-evidence state (24/163 questions)
+  scoring: E3_Parallel_Evaluation, 1,467 pairs, 0 errors (1,120 SAFE_SILENCE / 294 MATCH / 53 NO_MATCH)
+  invalidated_passes: 2 scoring passes retained as *.bad_join evidence (E3P id-join bug from the
+    B2 id-prefix fix; fixed same evening; deviation log "night, cont. 3")
+
+cost_and_attribution:
+  api_project: conceptual-GraphRAG (key "graphRAG", .env prefix AIzaSyDhK8 — CONFIRMED 2026-07-19)
+  note: key named govrag-run2-expertqa (Personal Project) carried only morning legacy-tree activity
+  run2_marginal_cost_usd: ~13-15   # Spend page Jul 19 bar at 20:47 CDT; MTD $41.01
+  evidence: 6_Results/Run2_Evidence/ (8 screenshots + Run2_API_Usage_Evidence_2026-07-19.md)
+
+archives:
+  results: results/run2_hagrid/ (23 files + SHA256SUMS.txt, read-only)
+  git: commits f6af3cc…ebc3a6e…39f4a0e…b9e9d94, tag run2-complete (github.com/gunavivek/GovernRAG1)
+
+headline_results:  # judge gemini-3.1-pro-preview
+  frontier: G1 cov 78% acc 72% faith 1.00 falseRej 18% | G2 cov 17% | G3/G4/Aff cov 0%
+  reading: CLIFF — out-of-ontology corpus (25.8% M4-aligned concepts); Analysis_CrossRun.md

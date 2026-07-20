@@ -1,0 +1,43 @@
+# Run 3 Manifest — ExpertQA (GovernRAG Paper 2)
+run_id: run3_expertqa
+executed: 2026-07-19 21:0x CDT → 2026-07-20 00:4x CDT (selection→build→serve→judging, single evening)
+status: COMPLETE_SEALED   # git tag run3-complete
+
+corpus:
+  source: RAGBench ExpertQA (train+validation+test, 2,027 unique questions)
+  selection: K=150 greedy full-cover by document reuse, --drop-junk (80 junk docs excluded)
+  questions: 150  (answerable 45 / unanswerable 105 — the N-heavy abstention probe)
+  files:
+    selection_manifest: data/expertqa_run3_selection.json  # sha256 e09ae6ecfeff6125…
+    records: data/expertqa_run3_records.csv                # sha256 20d68efac13f5c87…
+  junk_filter_justification: Subset_Selection_Validity.md §2b (content-only, pre-registered,
+    uniform, hash-disclosed, conservative direction); representativeness refresh pending (7B-3)
+
+models:
+  build: gemini-3.1-flash-lite (M1/M2/M3.3/M4) + gemini-embedding-001 (M5)
+  serve_generation_and_naive: gemini-3.5-flash
+  judge: gemini-3.1-pro-preview
+
+infrastructure:
+  build: A1_RAGBench_D0_M0_Runner expertqa_run3 (D1 3.8 s; D0 42 s; M0 99.5 min; total 100.28 min)
+    + B1 snapshot; working slot pre-cleaned (_quarantine/run2_hagrid_build_partials — the
+    stale-resume lesson applied proactively). M4: 332 aligned, 366 low-conf (47.2% aligned share).
+  index_snapshot: index/expertqa_run3/ (1,256 nodes / 7,066 edges; read-only)
+  serve: B4 run-tag run3_expertqa, 6 batches, K=25 (~9-11 min/batch; long-form corpus)
+  scoring: E3_Parallel_Evaluation, 1,350 pairs, 0 errors (1,018 SAFE_SILENCE / 208 MATCH / 124 NO_MATCH)
+
+cost_and_attribution:
+  api_project: conceptual-GraphRAG (same key as run 2)
+  run3_block_cost_usd: ~30   # MTD $41.01 (19th 20:47) → $71.23 (20th 00:46); includes run-2's
+                             # final re-scoring passes in the same window — boundary disclosed
+  evidence: 6_Results/Run3_Evidence/ (3 screenshots + Run3_API_Usage_Evidence_2026-07-20.md)
+
+archives:
+  results: results/run3_expertqa/ (SHA256SUMS.txt, read-only)
+  git: commits 3e03097…2ef21c5, tag run3-complete
+
+headline_results:  # judge gemini-3.1-pro-preview
+  frontier: G1 cov 59% | G2-tier BAND cov 33% with corrRef 75% vs naive 44% | G3/G4/Aff cov 0%
+  notable: first config family where governance beats naive on GA (65-66% vs 55%) — N-heavy corpus;
+    refuse-all GA=70% caveat applies; naive faithfulness 0.99 (first sub-ceiling observation)
+  reading: BAND — partially-aligned corpus (47.2%); Analysis_CrossRun.md
