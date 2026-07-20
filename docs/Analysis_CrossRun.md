@@ -1,11 +1,12 @@
 # Cross-Run Analysis — Runs 1–3 (DRAFT v1, 2026-07-20)
 
+*v4 (2026-07-20): Run-1 paired bootstrap CIs added (§8).*
+*v3 (2026-07-20): H4 complete for runs 2–3 (100.0%/100.0%).*
 *v2 (2026-07-20 midday): Run-1 re-judge complete; judge-agreement section added; H1 row revised.*
 *Sources: sealed archives `results/run1_delucionqa/` (tag `run1-complete`), `results/run2_hagrid/`
 (`run2-complete`), `results/run3_expertqa/` (`run3-complete`). Every number below traces to an
 `E3_*_frontier_summary.csv` in a hashed archive or to the sealed index snapshots.
-PENDING before this draft is final: (a) H4 citation stats for runs 2–3; (b) paired
-bootstrap CIs.*
+PENDING: bootstrap CIs for runs 2–3 (probe-N; wide intervals expected).*
 
 ## 1. The three corpora
 
@@ -46,7 +47,7 @@ corpus everything above G1 collapses (G2 barely holds 17%, G3+ refuse everything
 | **H1 quality parity @ G1** (±0.05 bound, answered-stratum accuracy) | **Judge-sensitive**: supported under original locked judge (Δ=.034); Δ=.080 under successor judge | Not supported (Δ=.138) | Not supported (Δ=.133) | Near-parity only in-ontology, within a judge-dependent 3–8-pt band; off-ontology the G1 cost is real (~13 pts) |
 | **H2 faithfulness superiority** | Refuted (tie at ceiling: .98 vs .99) | Refuted (tie: 1.00 vs 1.00) | Refuted (tie: 1.00 vs .99) | **Consistently refuted** — gold-context benchmarks leave no hallucination headroom; contribution reframed (see §5) |
 | **H3 selective abstention** | Supported w/ coverage cost (corrRef 33→83%, falseRej ≤64%) | Partial — cost extreme (falseRej 85–100% at G2+) | **Strongest support** (corrRef 75% vs naive 44%; GA 65% vs 55%) | Monotone dial replicates on all three; the *price* varies with ontology fit |
-| **H4 auditability** | Supported (97.7–99.9% resolvable citations; complete decision logs) | Decision logs complete; citation stats pending | Decision logs complete; citation stats pending | Reductions captured 100% of questions in every run |
+| **H4 auditability** | Supported (97.7–99.9% resolvable citations) | **Supported (100.0%**, 206/206 answers cited) | **Supported (100.0%**, 238/238 answers cited) | The one hypothesis with an unqualified cross-corpus verdict: full provenance + complete decision logs in every run |
 
 Notable regularity: **correct-refusal at the G2 tier is ~75–78% on all three corpora** while
 its cost (false rejection) varies 51→85% — the gate's *benefit* is stable, its *price* is
@@ -124,3 +125,30 @@ consistent judge below.
 G0 100%/86%/1.00; G1 93%/78%/1.00 (falseRej 5%); G2 44%/19%; G3 38%/16%; G4 35%/14%;
 corrRef 41→83%. Cross-corpus under ONE judge: naive acc 86/86/82, G1 acc 78/72/69 —
 level-comparable at last.
+
+
+## 8. Statistical inference — Run-1 paired bootstrap (7A-4, B=10,000, seed 20260720)
+
+Metric definitions for this section: coverage = judged-answer share; accuracy-on-answered =
+MATCH / (MATCH+NO_MATCH); corrRef = refusal share of the unanswerable stratum. Records
+resampled with replacement; both arms evaluated on the identical resample (paired).
+
+**Per-config 95% CIs (consistent judge, gemini-3.1-pro-preview):**
+G0 cov [.924,.956], acc [.843,.888], corrRef [.286,.529] · G1 cov [.907,.942], acc
+[.772,.827], corrRef [.297,.547] · G2 cov [.408,.473], acc [.368,.465], corrRef
+[.673,.881] · G4 cov [.317,.378], acc [.338,.446], corrRef [.730,.918].
+
+**H1 — paired Δ accuracy (G1 − naive), both judges:**
+
+| Judge | Δ | 95% CI | Verdict vs ±.05 bound |
+|---|---|---|---|
+| Original (2.5-pro, pre-registered) | −.018 | [−.050, +.014] | Within bound (at its edge); includes 0 → parity supported |
+| Successor (3.1-pro-preview) | −.065 | [−.090, −.041] | Excludes 0 → real cost, bounded ≤ ~.09; straddles bound |
+
+**H3 — paired Δ corrRef (G2 − naive), successor judge:** +.250 to +.500 (95% CI; excludes 0)
+— the abstention gain is judge-robust and inferentially solid.
+
+Paper sentence: G1 attains accuracy parity within the pre-specified bound under the
+pre-registered judge; under the successor judge a small real cost appears (4–9 points,
+95% CI). The abstention gain is large and robust under either judge. Runs 2–3 CIs to be
+added (probe N ⇒ wide intervals; reported for completeness, not for headline claims).
