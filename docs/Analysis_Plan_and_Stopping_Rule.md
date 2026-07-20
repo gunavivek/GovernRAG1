@@ -242,3 +242,13 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   E3P judge client gained the same 120 s per-call HTTP timeout as M1 (a hung judge socket
   had frozen the final pair indefinitely; approved). LESSON RECORDED: any id-format change
   must be grepped across the entire harness before serving.
+- **2026-07-20 — RUN-1 RE-JUDGE COMPLETE (dual-judge robustness; approved 2026-07-19).**
+  All 8,208 Run-1 pairs re-judged with gemini-3.1-pro-preview (the successor to the
+  withdrawn locked judge). Original judging preserved bit-identical (post-run SHA
+  verification 47/47); re-judge sealed as append-only archive `results/run1_rejudge/`
+  (own SHA256SUMS). Agreement: κ=0.681 (substantial), 84.1% on judged pairs; successor
+  systematically more lenient (MATCH .506→.578), concentrated on verbose answers
+  (G0/G1). DISCLOSURE: H1's pre-registered ±.05 parity bound is judge-sensitive on
+  Run 1 (Δ=.034 original vs Δ=.080 successor); the paper reports both judges, treats
+  frontier structure (judge-invariant) and accuracy levels (judge-dependent) separately,
+  and uses the single consistent judge for all cross-run comparisons.
