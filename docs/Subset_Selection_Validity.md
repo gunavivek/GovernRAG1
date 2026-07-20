@@ -37,6 +37,41 @@ whether the selection could have been influenced by results. Four tests, all sat
 Cherry-picking is post-hoc, outcome-driven, and invisible. This selection is prior,
 structural, and public — the opposite on each axis.
 
+## 2b. The junk-document filter is data cleaning, not selection (run 3, `--drop-junk`)
+
+RAGBench's web-collected corpora contain scraping artifacts: HTTP error pages ("Access
+Denied", "403 Forbidden", CAPTCHA interstitials) and sub-40-word stubs. The `--drop-junk`
+filter excludes them before document selection. Five properties keep this on the data-
+cleaning side of the line:
+
+1. **Content-only, outcome-blind criterion.** A document is excluded iff its own text
+   matches a FIXED, pre-registered marker list or falls under 40 words. No model output,
+   no result, and no question property is consulted — the filter cannot "see" what it
+   helps or hurts.
+2. **Pre-registered before execution.** Markers and threshold are recorded in the
+   deviation log (2026-07-19, GitHub-timestamped) and in `ragbench_select_and_prep.py`
+   before any run-3 generation existed.
+3. **Uniform application.** The same filter ran on every corpus from the moment it was
+   introduced (HAGRID: 462 excluded; ExpertQA: 80 excluded) — never selectively invoked.
+4. **Fully disclosed and reproducible.** Every excluded document's hash is published in
+   the selection manifest (`junk_doc_hashes`); any third party can re-run the filter and
+   obtain the identical exclusion set.
+5. **Conservative direction of effect.** Machine-unusable evidence is precisely where a
+   governance layer looks best (correct refusal) and a naive baseline looks worst
+   (hallucination over garbage). Removing junk therefore removes cases FAVORABLE to the
+   evaluated artifact — the filter biases against our hypotheses, not toward them.
+
+An "Access Denied" page is not a hard document; it is a collection defect. Excluding it
+is the corpus-level analogue of the question dedup already applied in Run 1, and the
+representativeness table (§4) is recomputed on the post-filter selection.
+
+**Paper-ready sentence (Methods):**
+> Documents matching a pre-registered list of scraping-artifact markers (HTTP error
+> pages, CAPTCHA interstitials) or shorter than 40 words were excluded before selection;
+> exclusion hashes ship in each selection manifest, the filter is uniform across corpora,
+> and its effect is conservative for our hypotheses, since unusable evidence is where
+> governed abstention would otherwise be rewarded.
+
 ## 3. Claim scoping (what runs 2–3 do and do not assert)
 Run 1 evaluated the **complete** DelucionQA benchmark (all 912 unique questions); the
 paper's headline quantitative claims rest on that full-coverage run. Runs 2–3 are
