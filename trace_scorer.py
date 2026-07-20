@@ -102,6 +102,10 @@ def judge_tuple(question, context, response, model, client, types):
         r = client.models.generate_content(model=model, contents=prompt,
                 config=types.GenerateContentConfig(response_mime_type="application/json", temperature=0.0))
         d = json.loads(re.sub(r'```json|```', '', r.text).strip())
+        if isinstance(d, list):  # gemini-3.1-pro-preview sometimes wraps the object in a list
+            d = next((x for x in d if isinstance(x, dict)), {})
+        if not isinstance(d, dict):
+            return None
     except Exception:
         return None
     n_ctx = len(ctx)

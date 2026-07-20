@@ -229,3 +229,16 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   per run. (b) HARNESS fix, B2: question ids were stamped with a hardcoded `delucionqa_q` prefix;
   now derived from the records filename (`hagrid_run2_q00003`) so run-2/3 artifacts carry
   truthful provenance ids. Gold joins are by question text; nothing keys on the prefix.
+- **2026-07-19 (night, cont. 3) — E3P JOIN BUG FROM THE ID-PREFIX FIX; FIRST RUN-2 SCORING
+  INVALIDATED AND RE-SCORED (measurement fix, same evening, before any results reported).**
+  The approved B2 id-prefix change (run-derived question ids) broke an undetected twin
+  assumption in E3_Parallel_Evaluation.py, which RECONSTRUCTED ids with a hardcoded
+  "delucionqa_q%05d" to join governed answers: every governed lookup missed, empty answers
+  scored as refusals, and the first run-2 summary wrongly reported 100% refusal for ALL
+  governed configs including G1 (actual G1 serve data: 127/163 answered). Detected immediately
+  by cross-checking the summary against the serve archives. FIX: join by the numeric index
+  parsed from the record_id tail (prefix-agnostic); invalid outputs retained as *.bad_join
+  evidence; full clean re-score executed with the same locked judge. Also same evening:
+  E3P judge client gained the same 120 s per-call HTTP timeout as M1 (a hung judge socket
+  had frozen the final pair indefinitely; approved). LESSON RECORDED: any id-format change
+  must be grepped across the entire harness before serving.

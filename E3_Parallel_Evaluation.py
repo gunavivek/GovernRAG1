@@ -91,7 +91,11 @@ _TL = threading.local()
 def get_client():
     if not hasattr(_TL, "client"):
         from google import genai
-        _TL.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+        from google.genai import types as _t
+        # 120s per-call ceiling (approved 2026-07-19): a hung judge socket becomes a
+        # timeout error that feeds the retry/backoff instead of freezing a worker.
+        _TL.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"),
+                                  http_options=_t.HttpOptions(timeout=120_000))
     return _TL.client
 
 
@@ -159,13 +163,18 @@ def main():
         if envd is None:
             continue
         for r in load_jsonl(RES / ("_spec_%s.jsonl" % slug(name))):
-            cfg_ans[name][str(r.get("record_id"))] = r
+            # join by NUMERIC index parsed from the record_id tail ("<anything>_qNNNNN"):
+            # prefix-agnostic (2026-07-19 fix -- B2 now stamps run-derived prefixes,
+            # the old hardcoded "delucionqa_q%05d" reconstruction broke the join)
+            rid_tail = str(r.get("record_id", "")).rsplit("_q", 1)[-1]
+            key = str(int(rid_tail)) if rid_tail.isdigit() else str(r.get("record_id"))
+            cfg_ans[name][key] = r
         cfg_red[name] = load_jsonl(RES / ("_spec_%s_red.jsonl" % slug(name)))
 
     # build all (record, config) tasks
     tasks = []
     for row in serve:
-        idx = str(row.get("idx")); rid = "delucionqa_q%05d" % int(idx)
+        idx = str(row.get("idx")); rid = str(int(idx))  # numeric join key, prefix-agnostic
         q = row.get("question", "")
         g = gold_map.get(ts.norm_q(q), {})
         gold = g.get("gold_response", row.get("gold", "")); answerable = g.get("answerable")
@@ -197,7 +206,16 @@ def main():
         with ThreadPoolExecutor(max_workers=args.workers) as ex:
             futs = {ex.submit(score_pair, t, args, types): t for t in todo}
             for fu in as_completed(futs):
-                rec = fu.result()
+                try:
+                    rec = fu.result()
+                except Exception as e:  # 2026-07-19: a single malformed judge response must
+                    t = futs[fu]        # not kill 1,400 good pairs; record ERROR, rerun retries it
+                    rec = {"idx": str(t["idx"]), "config": t["config"],
+                           "answerable": str(t.get("answerable")), "question": t.get("q", ""),
+                           "gold": t.get("gold", ""), "answer": t.get("ans", ""),
+                           "refused": str(t.get("refused")), "verdict": "ERROR_WORKER",
+                           "grade": "ERROR", "faith": None, "f1": None, "gov_ratio": None,
+                           "error": str(e)[:200]}
                 with lock:
                     ck.write(json.dumps(rec, ensure_ascii=False) + "\n"); ck.flush()
                     done[(str(rec["idx"]), rec["config"])] = rec
@@ -231,7 +249,7 @@ def main():
 
     def mean(xs): return (sum(xs) / len(xs)) if xs else float("nan")
     print("\n" + "=" * 118)
-    print("E3P UNIFIED EVALUATION (DelucionQA)   N=%d   judge=%s" % (len(serve), args.judge_model))
+    print("E3P UNIFIED EVALUATION   N=%d   judge=%s" % (len(serve), args.judge_model))
     print("=" * 118)
     hdr = ("config", "cov", "acc(adh)", "faith", "refuse", "corrRef", "falseRej", "tokF1", "GA", "C-F1")
     print("%-15s %5s %8s %6s %7s %8s %9s %6s %5s %6s" % hdr)
