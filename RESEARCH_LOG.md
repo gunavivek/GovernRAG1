@@ -102,3 +102,25 @@ Supporting facts (evidence in deviation log + terminal transcripts, logs/ 2026-0
   withdrawn with 404 "no longer available to new users" ~1h after passing an isolation test),
   disclosed, and timestamped on GitHub BEFORE any run-2 generation. Exact model pinned per run
   in each Run Manifest. Model deprecation is a recognized reproducibility hazard of LLM-API research.
+
+
+## 2026-07-20 — Campaign complete; analysis layer done (Sprint 7A+7B)
+
+- Run-1 re-judge under gemini-3.1-pro-preview: 8,208 pairs, 108.5 min, 0 errors; original
+  archive verified untouched (47/47 hashes) before AND after; sealed as results/run1_rejudge/.
+  Judge agreement κ=0.681; successor systematically more lenient on verbose answers.
+- Cross-run analysis (docs/Analysis_CrossRun.md, v4): three-corpus frontier table; H1–H4
+  verdict matrix; MEASURED ontology-fit moderator (aligned share 98.2/47.2/25.8% orders
+  G2-coverage 44/33/17% — slope/band/cliff; exploratory, not pre-registered); run-1 paired
+  bootstrap (B=10k): Δacc(G1−naive) = −.018 [−.050,+.014] original judge vs −.065
+  [−.090,−.041] successor → H1 judge-sensitive; ΔcorrRef(G2−naive) = +.25 to +.50 (robust).
+- H4: 100.0% resolvable-citation coverage on runs 2–3 (206/206, 238/238) — supported on all
+  three corpora; the only unqualified cross-corpus verdict.
+- Figure: docs/Frontier_ThreeCorpora.png (CVD-validated palette, consistent judge).
+- Manifests: Run2_Manifest.yaml, Run3_Manifest.yaml (models, incidents incl. stale-resume
+  and .bad_join disclosures, key attribution conceptual-GraphRAG, spend ≈$13–15 + ≈$30).
+- Representativeness: executed Run-3 drop-junk table added — the junk filter moved the
+  selection CLOSER to population (answerable 30.0% vs pre-filter 23.9%), reinforcing §2b.
+- PAPER FRAMING NOTES: contribution = calibrated abstention + auditability + frontier
+  characterization (NOT hallucination reduction — H2 ceiling); venue decision with Dr. Xu
+  BEFORE drafting; OKF demoted to one interop paragraph; FinQA/CUAD = confirmatory future work.

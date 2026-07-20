@@ -87,3 +87,37 @@ git tag + push; evidence pack to OneDrive; only then may the next run start.
 - B3_spectrum_axes.py still works but double-judges; for the full run use B4 + E3 only.
 - Cost/scale: Sprint-1 build alone cost ≈ $500; full run = 912 x (Q1..Q6 + naive) + 8
   configs x Q5/Q6 + E3 judging 912 x 9 with Pro — estimate before launching, and remember N≥3.
+
+
+---
+
+# STATUS AS OF 2026-07-20 — EVALUATION CAMPAIGN COMPLETE
+
+**All three pre-registered runs executed, scored, sealed, and tagged.** Numbers may enter
+the paper only from Tier-2 archives (rule unchanged).
+
+| Run | Corpus | N | Archive (Tier 2) | Tag | Judge |
+|---|---|---|---|---|---|
+| 1 | DelucionQA (full) | 912 | results/run1_delucionqa/ | run1-complete | 2.5-pro; RE-JUDGED under 3.1-pro-preview → results/run1_rejudge/ |
+| 2 | HAGRID K=150 drop-junk | 163 | results/run2_hagrid/ | run2-complete | 3.1-pro-preview |
+| 3 | ExpertQA K=150 drop-junk | 150 | results/run3_expertqa/ | run3-complete | 3.1-pro-preview |
+
+CORRECTIONS to earlier sections of this file (kept above for provenance):
+- Judge lock: gemini-2.5-pro was WITHDRAWN by Google 2026-07-19; locked successor =
+  gemini-3.1-pro-preview (deviation-logged; dual-judge robustness on run 1: κ=0.681).
+- Build models: gemini-3-flash-preview (run 1) → gemini-3.1-flash-lite (runs 2–3), forced
+  by degradation/withdrawal; disclosed per manifest.
+- N≥3 repeats: superseded 2026-07-12 by cross-corpus design + bootstrap CIs (deviation log).
+- Archive names: run2 = results/run2_hagrid/, run3 = results/run3_expertqa/ (run order
+  swapped 2026-07-19; the "run2_expertqa / run3_hagrid" names above are obsolete).
+- Change sets 5–6 gate: signed off (relayed 2026-07-09) before run 1.
+
+HEADLINE (consistent judge; details in docs/Analysis_CrossRun.md + Frontier_ThreeCorpora.png):
+frontier shape slope/band/cliff tracks ontology-aligned share (98.2% / 47.2% / 25.8%);
+G2-tier corrRef stable at ~75–78% on all corpora while its false-rejection price varies
+(51→85%); H4 auditability supported everywhere (97.7–100% resolvable citations); H2 refuted
+everywhere (faithfulness ceiling); H1 parity in-ontology only, judge-sensitive (Δ .034 vs
+.080; CIs in Analysis §8). Total runs-2+3 marginal cost < $45 (vs ~$720 run-1 all-in).
+
+CURRENT SPRINT: 7C (positioning + venue decision with Dr. Xu) then 8 (manuscript).
+Tracker: paper2-tracker artifact + Paper2/1_Planning/Sprint_Log.md.
