@@ -19,13 +19,40 @@ defense only. **Status:** SOURCED = text exists and is cited to its file · DRAF
 ---
 
 ## 0. Front matter — EXT
-- 0.1 Reading guide + extraction recipes (this page). SOURCED.
-- 0.2 **Proposal-contribution map** (the defense spine): the four committed contributions
-  (BA-aligned RAG framework · concept-attribute-value mapping · TRACe enterprise metrics ·
-  governance-friendly adoption pathway) → where delivered → evidence file. DRAFT — from
-  Email B text + Dissertation Proposal_v3 §5. 
-- 0.3 Timeline of the research program (proposal Apr 2025 → Paper 1 → Paper 2 campaign
-  Jul 2026 → defense). DRAFT — from Sprint_Log / RESEARCH_LOG.
+
+### 0.1 Reading guide
+This master is the single source of truth for the GovRAG research program. Papers, slides,
+and the dissertation chapters are EXTRACTIONS assembled from the recipes above. Every
+quantitative claim cites a sealed, SHA-256-manifested archive; sections marked EXPLORATORY
+may not be presented as confirmatory anywhere downstream.
+
+### 0.2 Proposal-contribution map — the defense spine  [STATUS: DONE, M-1]
+The dissertation proposal (approved April 16, 2025; committee: Xu, Talburt, Wu, Wang)
+committed to four contributions (§5). Each was delivered and measured:
+
+| # | Proposal commitment (Apr 2025, §5 verbatim intent) | Delivered as | Evidence (auditable) |
+|---|---|---|---|
+| C1 | **Business Architecture–Aligned RAG Framework** — Information Concepts from Business Architecture integrated into RAG for semantic alignment, retrieval precision, traceability | The GovernRAG governed concept-graph pipeline: BIZBOK reference ontology (R-pipeline, 553 concepts), domain governance profiles (D-pipeline), concept-graph construction with ontology alignment (M-pipeline), reference-monitor-mediated serving (Q-pipeline). Frozen and evaluated at benchmark scale. | Paper 1 v10.2 §4 (architecture); repo `experiment/`; per-corpus `index/<corpus>/build_manifest.json` (sealed) |
+| C2 | **Structured Concept Mapping Approach** — concept–attribute–value alignment between queries, documents, and BA constructs | Operational end-to-end: D5 governance manifests bind corpora to domain profiles; Q2 signatures carry attribute targets per query; M4 assigns every concept an alignment status (Match / Adaptive / Unmapped). Measuring the aligned share per corpus (98.2% / 47.2% / 25.8%) yielded the ontology-fit variable that predicts governance cost — a result BEYOND the proposal. | Paper 1 §4; `M4_alignment_results.jsonl` + graph attributes in each sealed index; Analysis_CrossRun §4 |
+| C3 | **Enterprise-Grade Evaluation Metrics** — Relevance, Utilization, Completeness, Adherence applied to retrieval and generation quality | Applied exactly as proposed (RAGBench TRACe), extended with abstention correctness, provenance coverage, and cost — in a pre-registered, report-regardless design: 1,225 questions, 3 corpora, 9 configurations, dual-judge robustness (κ=0.681), paired bootstrap CIs. | `Analysis_Plan_and_Stopping_Rule.md` (pre-registration + deviation log); `E3_*_master_eval_log.csv` in each sealed archive; Analysis_CrossRun §2–§3, §7–§8 |
+| C4 | **Pathway for Enterprise AI Adoption** — standards-based, explainable, governance-friendly deployment | The governance dial with priced operating points: G1 ≈ auditability nearly free (93% coverage in-domain, 97.7–100% resolvable citations, complete decision logs); strict tiers buy reliable refusal (corrRef 75–78% vs 41–44% ungoverned) at a coverage price predictable from C2's aligned share. Deployment guidance: measure ontology–corpus fit BEFORE enabling strict tiers. Interop: decision logs export to OKF v0.1 (conformance-verified). | Analysis_CrossRun §5 (contribution framing); `Supplement_Governance_Dial_Examples` (11 verbatim walkthroughs); `3_Positioning/OKF_Demo/`; Run manifests (cost) |
+
+Beyond the proposal: (i) the slope/band/cliff frontier taxonomy with the ontology-fit
+moderator (EXPLORATORY — motivates the confirmatory in-ontology study in ch 12); (ii) the
+build-once/serve-many re-engineering that reduced evaluation cost O(n·C_build)→O(C_build+
+n·C_query), making 1,225-question evaluation feasible for under $1,000 total.
+
+### 0.3 Program timeline  [STATUS: DONE, M-1]
+Jan 2021 program entry (two-paper requirement not yet in effect — applicability question
+posed to Dr. Talburt 2026-07-21) · Apr 16, 2025 proposal approved · 2025–2026 framework
+construction (Part 1) · May 2026 Paper 1 v10.2 FINAL submitted to QASC/QUAIC 2026 (decision
+expected ~Jul 31; conference Aug 28) · Jun–Jul 2026 build-once/serve-many re-engineering ·
+Jul 6, 2026 pre-registration committed · Jul 9–10 Run 1 (DelucionQA, 912 q, 8,208 judged
+pairs) · Jul 12–18 cross-corpus design + selection (deviation-logged) · Jul 19–20 Runs 2–3
+(HAGRID 163 q; ExpertQA 150 q) + forced model migration (4 withdrawals) + Run-1 re-judge
+under successor judge · Jul 20–21 cross-run analysis sealed; committee engaged; venue plan
+(TPS Aug 15 → notify Sept 20) · Jul 22–31 master assembly (Sprint M) · Aug 1–15 extraction
++ TPS submission (Sprint E) · target: defense upon acceptance + committee green light.
 
 ## 1. Introduction — CORE-S1 · CORE-S2 · EXT
 The governance gap in RAG; research questions; contributions of the program. SOURCED
