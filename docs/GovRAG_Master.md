@@ -54,31 +54,210 @@ under successor judge · Jul 20–21 cross-run analysis sealed; committee engage
 (TPS Aug 15 → notify Sept 20) · Jul 22–31 master assembly (Sprint M) · Aug 1–15 extraction
 + TPS submission (Sprint E) · target: defense upon acceptance + committee green light.
 
-## 1. Introduction — CORE-S1 · CORE-S2 · EXT
-The governance gap in RAG; research questions; contributions of the program. SOURCED
-(Paper 1 §1, adapt) + DRAFT (Paper-2 contributions paragraph from Analysis_CrossRun §5).
+## 1. Introduction — CORE-S1 · CORE-S2 · EXT  [STATUS: DONE, M-2 — program-level adaptation of Paper 1 §1]
+*Reference numbering [n] follows Paper 1 v10.2 until the unified bibliography pass (M-9).*
 
-## 2. Related work — CORE-S1(compressed) · CORE-S2 · EXT
-SOURCED (Paper 1 §2, incl. §2.7 comparison artifact) + DRAFT: 2026 governance-RAG delta
-(CogniGraph, Jain et al., Korosuke — single-operating-point vs our frontier) ← Sprint 7C-1
-output when done. OKF: ONE interop paragraph (3_Positioning/Positioning_relative_to_OKF.md).
+### 1.1 The governance gap in retrieval-augmented generation
+Retrieval-Augmented Generation (RAG) has become the dominant pattern for grounding large
+language models in non-parametric knowledge sources [1]. Variants — Corrective RAG [2],
+Self-RAG [3], GraphRAG [4], KAG [5], and the modular architectures surveyed in [6] — extend
+the retrieval primitive principally to improve answer accuracy. What every variant shares is
+an architectural commitment to retrieval as the only operation between query and model, and
+to answer accuracy as the central measure of quality.
 
-## 3. The GovernRAG framework [Part 1] — CORE-S2 · CORE-KG · EXT
-- 3.1 Governance-manifest architecture; reference-monitor mediation. SOURCED (Paper 1 §4).
-- 3.2 R/D pipelines: reference ontology, domain governance profiles. SOURCED (Paper 1 §4 + repo).
-- 3.3 M pipeline: concept-graph construction, BIZBOK alignment (M4). SOURCED.
-- 3.4 Q pipeline: intent gate → signature/warrant → governed walk → Q5 monitor → synthesis. SOURCED.
-- 3.5 Governance dial G0–G4 + Ont/Aff axes: semantics of each gate. SOURCED (Paper 1 + Frozen_Code_Changes).
-- 3.9 **One-page framework summary** — CORE-S1 (the ONLY §3 content in Scenario 1). DRAFT.
+That commitment is unsuitable for enterprise document environments. In banking, healthcare,
+and legal-discovery contexts, governance frameworks lack adequate LLM-specific controls for
+hallucination risk [7]; the deployment question is not only *did the model produce the right
+answer* but *can the answer be demonstrated to derive from authorised evidence, recorded with
+audit-defensible provenance, externally verifiable against documented governance objectives*.
+These are properties of the architecture above the model — supplied neither by prompt
+engineering nor by model improvement. Three observations make the gap concrete: where RAG
+variants expose governance controls (SD-RAG [8], OPA two-plane [9], SafeRAG [10], OG-RAG
+[11], KAG [5]), none anchors governance on a documented cross-industry enterprise reference
+vocabulary; no published RAG system uses a recognised enterprise body of knowledge as its
+reference plane; and RAG evaluation measures generation quality (RAGBench/TRACe [20]) rather
+than architectural enforcement.
 
-## 4. Design-science methodology — EXT (CORE-S2 one paragraph)
-DSR approach, design objectives, kernel theories, design principles DP1–DP3. SOURCED (Paper 1 §3, §3.4).
+### 1.2 The research program: from architecture to priced governance
+This dissertation closes that gap in two movements. **Part 1** (the GovernRAG architecture)
+contributes the missing composition: a per-record governance contract anchored on a
+documented enterprise reference vocabulary, predicate-validated retrieval expansion under
+that contract, and reference-monitor mediation of the generation context as the contract's
+enforcement gate — demonstrated end-to-end on ten cases. **Part 2** answers the question the
+architecture makes askable: *evaluated at benchmark scale, what does governance actually
+cost, and what does it buy?* A build-once/serve-many re-engineering of the execution layer
+(governance logic frozen) made a pre-registered, three-corpus, 1,225-question evaluation
+feasible, producing the first per-level governance–coverage frontier for RAG and an
+ontology-fit variable that predicts the frontier's shape.
 
-## 5. Part-1 demonstration & ablation — EXT (5.4 → CORE-S2)
-- 5.1 Ten-case walkthrough. SOURCED (Paper 1 §5–6).
-- 5.2 Outcome matrix. SOURCED (Paper 1 §6.1).
-- 5.4 Ablation: causal contribution of DP3. SOURCED (Paper 1 §6.2).
-- 5.5 Boundary modes. SOURCED (Paper 1 §7). Pilot limit (n=10) → motivates Part 2. DRAFT (1 para).
+### 1.3 Contributions of the program
+Part 1 (Hevner taxonomy [22]; validated §5–§6): **C1 — Governance Manifest** (construct): a
+per-record, machine-executable governance contract derived from an enterprise reference
+vocabulary and forward-bound through every downstream stage (D5). **C2 — Recursive Bridge
+Discovery** (method): audit-driven, predicate-validated retrieval expansion, bounded to one
+iteration (Q3.5/Q3.6). **C3 — Reference Monitor** (composition): the Anderson/Saltzer–
+Schroeder pattern [25, 26] instantiated as the output gate over the manifest substrate (Q5).
+
+Part 2 (this dissertation's evaluation contributions; ch 6–9): **C4 — Feasible governed
+evaluation**: build-once/serve-many execution reducing cost O(n·C_build) → O(C_build +
+n·C_query), enabling benchmark-scale governed evaluation for under $1,000. **C5 — The
+governance frontier**: pre-registered measurement of coverage, accuracy, faithfulness,
+abstention, and auditability across governance levels G0–G4 on three corpora — governance
+as a priced dial, not a switch. **C6 — Ontology-fit as a deployment predictor**
+(exploratory): the corpus's ontology-aligned concept share (98.2% / 47.2% / 25.8%) orders
+the frontier's shape (slope / band / cliff), giving practitioners a measurable pre-deployment
+predictor of governance cost.
+
+## 2. Related work — CORE-S1(compressed) · CORE-S2 · EXT  [STATUS: DONE, M-2 + M-2b]
+
+### 2.1 RAG variants and taxonomy  [ported, Paper 1 §2.1]
+Survey literature [6, 29] organises RAG into Naive, Advanced, and Modular; failure handling
+spans robust-retriever selection [28, 32], iterative/adaptive loops [30, 31], self-reflection
+[3], trajectory repair [33], and agentic reframings [34, 35]. GovernRAG positions as Modular
+RAG whose modularity is *governance-driven*: pipeline boundaries drawn for audit and contract
+enforcement. Within graph-augmented RAG (GraphRAG [4], KAG [5]) the graph schema is emergent
+from the corpus; GovernRAG inverts this — an enterprise reference graph is constructed
+globally and per-corpus graphs are aligned to it. *(Part 2 gives this inversion empirical
+teeth: the alignment rate itself becomes the cost predictor, ch 8.4.)*
+
+### 2.2 Policy and management frameworks  [ported, Paper 1 §2.2]
+ISO/IEC 42001:2023 [21] and the NIST AI RMF [44] specify *what* evidence regulated
+deployments must produce (lineage, decision traceability, per-output evidence), not *how* to
+produce it structurally [7, 19]. GovernRAG addresses the complementary architectural layer:
+the manifest (C1) and per-chunk decision log (C3) are exactly the per-record evidence
+artefacts these frameworks require, produced structurally. *(Part 2 quantifies the claim:
+97.7–100% resolvable citations and complete decision logs across 1,225 questions, ch 8.3.)*
+
+### 2.3 Ontology-grounded RAG  [ported, Paper 1 §2.3]
+DeBellis et al. [14], OG-RAG [11], OntoRAG [36], and the ArchiMate line [12, 13] use
+ontologies as schema layers. GovernRAG differs twice over: the anchor is a documented
+enterprise reference vocabulary (BAGuild IRM [40]; vocabulary-agnostic in principle), and
+the constraint is forward-bound through D, M, and Q pipelines rather than applied at
+retrieval time only.
+
+### 2.4 Retrieval-stage policy enforcement  [ported, Paper 1 §2.4]
+SD-RAG [8], OPA two-plane [9], SafeRAG [10], ARBITER [23], conformal filtering [37], and
+Le Ray's policy-governed triptych [43] enforce policy over retrieval or attest what was
+generated. GovernRAG operates at the complementary point — architectural enforcement of
+*what can be generated* — via the reference-monitor pattern over a per-record,
+vocabulary-anchored contract.
+
+### 2.5 Governance evaluation  [ported, Paper 1 §2.5 + DELTA SLOT]
+Generation-quality evaluation (RAGBench/TRACe [20], [15–18, 38]) measures relevance,
+accuracy, faithfulness — not architectural enforcement.
+**The 2026 governance-RAG delta [M-2b — DONE, from Prior_Art_Synthesis.md, full texts
+read 2026-07-07].** Three ways to use a KG in generation frame the field (SITL's own
+taxonomy): KG-before as retrieval context (GraphRAG [4], KAG [5]); KG-after as output
+verification — CogniGraph's SemanticSHACLGate (Kumar 2026, SSRN 6837300) validates every
+agent output post-generation at fixed thresholds, SITL (Nadimuthu et al. 2026, IEEE
+Internet Computing) grounds outputs into a deterministic ontology binary-validate/reject,
+HalluGraph (Noël 2025) detects misalignment without an abstention policy. **GovernRAG
+occupies the unfilled third position: KG-as-authorization-gate on the evidence ADMITTED to
+generation** — the reference monitor governs what the model may condition on, tunably.
+Adjacent single-point systems sharpen the wedge: Korosuke (Singh 2026) collapses security
+into a scalar re-ranking utility; Governance-Aware Agentic RAG (Jain 2026) offers one
+answerable/abstain gate without a KG substrate; C-RAG (Kang 2024) and Conformal-RAG (Feng
+2025) drive risk–coverage with model *confidence*, not authorization strictness. Every one
+of these systems reports a **single operating point**; the field's own gap analyses name the
+missing per-strictness faithfulness-versus-coverage curve and the refusal/correct-refusal/
+false-rejection triad as unreported. Part 2 contributes exactly these: the G0–G4 frontier
+across three corpora, the abstention triad per level, and (beyond the field's asks) a
+corpus-level predictor of the frontier's shape. One sentence: *where CogniGraph and SITL
+place a single fail-closed symbolic gate on the model's output, GovernRAG places a tunable,
+ontology-derived reference monitor on the admitted evidence — and reports the full
+governance-strictness frontier neither characterizes.* (Comparability: report CogniGraph's
+Constrained-F1 alongside ours — done, E3P `C-F1` column, ch 8.)
+
+### 2.6 Theoretical foundations  [ported, Paper 1 §2.6]
+Kernel theories per design principle: DP3 extends information-flow security and the
+reference-monitor pattern [25, 26] (complete mediation, tamper-resistance, verifiability);
+DP1 extends EA reference principles, pipes-and-filters [39], and data-provenance theory;
+DP2 extends IR under typed constraints and bounded graph traversal.
+
+### 2.7 Comparison artifact  [ported by reference, Paper 1 §2.7 Table 1]
+Gap matrix C1–C3 × {ARBITER, Stop-RAG, Doctor-RAG, DecoupleSearch, Naive RAG} — carry
+Table 1 verbatim into extractions needing it. Part 2 adds a second comparison axis (operating
+points vs frontier) to be tabulated in ch 8/9 once M-2b lands.
+
+### 2.8 OKF interoperability  [one paragraph — per positioning decision]
+GovernRAG's decision logs and provenance bundles export losslessly to Google's Open
+Knowledge Format v0.1 (conformance-verified demo, `3_Positioning/OKF_Demo/`): the audit
+artefacts H4 measures are portable to an emerging vendor standard, not proprietary to this
+architecture. OKF is an alignment target, not a dependency.
+
+## 3. The GovernRAG framework [Part 1] — CORE-S2 · CORE-KG · EXT  [STATUS: PORTED, M-3 — condensed; full text = Paper 1 v10.2 §4 + Supp. A/B]
+*Porting depth: this chapter carries the architecture at extraction depth; the dissertation's
+Phase-5 pass expands from Paper 1 verbatim where needed. Figures: Paper 1 Fig. 1 (architecture),
+Table 2 (pipeline summary) — carry into S2 extractions.*
+
+### 3.1 Architecture overview
+GovernRAG is five capability pipelines plus a cross-cutting audit layer, connected by five
+typed flows (vocabulary, manifest, evidence, response, audit): **R** — Reference Vocabulary
+Construction (global, corpus-independent; R3.5 ontology builder, R4 embedder); **D** —
+Governance Contract Generation (per corpus; tiered domain anchoring D1–D3, control packets
+D4, **manifest composer D5 = C1's locus**); **M** — Document Knowledge Management (per
+corpus; predicate-bound chunking M1, triple extraction M2, graph construction M3, concept
+augmentation M3.3, ontology alignment M4, embedding M5); **Q** — Audited Query Resolution
+(per question; intent gate Q1, signature Q2, governed retrieval Q3, **bridge discovery
+Q3.5/Q3.6 = C2**, residuals Q4, **Reference Monitor Q5 = C3**, cited synthesis Q6); **E** —
+comparative evaluation vs Naive baseline; **Z** — audit composition (provenance, decision
+logs). The manifest is forward-bound: one governance thread from vocabulary to answer.
+
+### 3.2–3.4 Pipeline mechanisms  [by reference]
+Full mechanisms in Paper 1 §4 + Supplementary A (R ontology construction; D three-tier
+domain anchoring; M extraction under the predicate budget; Q governed retrieval). Part-2-
+relevant detail: M4 assigns every concept node an alignment status (Match/Adaptive/
+Unmapped(Low-Conf)) against the 553-concept BIZBOK reference — the per-corpus aligned share
+that ch 8.4 elevates to the cost predictor.
+
+### 3.5 The governance dial (Part-2 instrument over the Part-1 substrate)
+G0 = ungoverned baseline (identical model, no contract) · G1 Cited = citation-bearing
+answers required · G2 Grounded = evidence must satisfy the manifest's authorized predicates ·
+G3 Strict = strict authorization · G4 Corroborated = multi-source corroboration; plus
+orthogonal axes (ontology-conformance: drop non-conformant triples; domain-affinity:
+threshold on chunk affinity). Levels parameterize Q5/Q6 behavior only — retrieval and graph
+are level-invariant, so per-level differences isolate the governance mechanism. (Genesis:
+`GOVRAG_LEVEL` pilot, deviation log 2026-07-06; Dr. Xu sign-off relayed 2026-07-09.)
+
+### 3.9 **One-page framework summary** — CORE-S1 (the ONLY §3 content in Scenario 1). DRAFT — task M-4.
+
+## 4. Design-science methodology — EXT (CORE-S2 one paragraph)  [STATUS: PORTED, M-3]
+Positioned in Design Science Research [22, 27]: the contribution is the artifact + three
+design principles + boundary characterisation — architectural and constructive. Five design
+objectives: **DO1–DO4 uniform-realisation** (per-record contract; per-chunk audit log of
+admission/exclusion with reasons; cited answer or boundary-maintained refusal; end-to-end
+verifiability) — satisfied 10/10 by construction; **DO5 categorical-differentiation**
+(a capability Naive RAG cannot exhibit by design: boundary-maintained refusal), decomposed
+by enforcement layer DO5a (Q6 structural check on empty evidence) / DO5b (model competence) /
+DO5c (DP3 structural guarantee). Three design principles ground the contributions: **DP1**
+per-record forward-bound governance contract (primary; kernel: EA reference principles,
+pipes-and-filters, provenance theory) · **DP2** audit-driven predicate-validated expansion
+(kernel: IR under typed constraints) · **DP3** reference-monitor mediation (kernel:
+Lampson/Anderson/Saltzer–Schroeder; complete mediation, tamper-resistance, verifiability).
+Part 2 completes the DSR cycle: Peffers Step-6 Evaluation, executed as the pre-registered
+benchmark campaign (ch 7–8) that Paper 1 §8 named as next-step work.
+
+## 5. Part-1 demonstration & ablation — EXT (5.4 → CORE-S2)  [STATUS: PORTED, M-3]
+### 5.1–5.2 Ten-case demonstration and outcome matrix  [by reference: Paper 1 §5–6, Table 3]
+Ten RGB cases (five questions × positive/negative evidence; same model both arms). DO1–DO4
+hold 10/10; categorical differentiation (DO5) exhibited in 3/5 negative cases (rgb_5_N,
+rgb_104_N, rgb_3_N — Naive bled/hallucinated, GovernRAG refused); remaining cases classify
+into named boundary modes (BM1 over-strict refusal; BM2 predicate-authorised bleeding;
+BM3 parametric leakage) — characterised, not hidden.
+### 5.4 Ablation  [by reference: Paper 1 §6.2 — CORE-S2]
+DP3's causal role isolated by ablation and reframed honestly: a model-agnostic, audit-grade
+structural guarantee operating in defence-in-depth with Q6's structural check and model
+competence — not the sole causal mechanism of refusal. (Note for ch 10: Paper 1 also
+absorbed a forced model substitution — gemma-3-4b-it deprecated, baseline replayed on its
+successor — prefiguring Part 2's model-mortality protocol.)
+### 5.5 Bridge: from demonstration to measurement  [DRAFT DONE, M-3]
+The Part-1 demonstration establishes that the architecture *realises* governance properties
+uniformly — but at n=10, purposively selected, on one corpus, with the original per-question
+execution model rebuilding the graph for every case (~3 h/question), it cannot say what
+governance *costs* at scale, how refusal behaves across a full answerability distribution,
+or whether the properties generalise across corpora. Those are frontier questions, and they
+required re-engineering the execution layer without touching a single governance decision —
+the subject of chapter 6.
 
 ## 6. Scale-out: build-once / serve-many — CORE-all
 The execution-layer re-engineering that made benchmark scale feasible (O(C_build + n·C_query));
