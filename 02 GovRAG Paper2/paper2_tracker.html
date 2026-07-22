@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Paper 2 — GovernRAG Tracker</title>
+<style>
+:root{--bg:#faf9f5;--card:#fff;--ink:#1a1915;--mut:#6e6a5e;--line:#e8e5da;--done:#2e7d46;--prog:#b98300;--pend:#8a8577;--block:#b3402e}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1915;--card:#242320;--ink:#eceade;--mut:#a09a8c;--line:#3a382f;--done:#7fc98f;--prog:#e5b567;--pend:#8a8577;--block:#e08573}}
+body{font-family:Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--ink);margin:0;padding:24px;line-height:1.45}
+h1{font-size:20px;margin:0 0 2px}
+.sub{color:var(--mut);font-size:12.5px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:14px}
+h2{font-size:14px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.04em}
+ul{margin:6px 0;padding-left:0;list-style:none}
+li{padding:5px 0;border-bottom:1px solid var(--line);font-size:13.5px;display:flex;gap:9px;align-items:baseline}
+li:last-child{border-bottom:none}
+.b{font-weight:600;white-space:nowrap;font-size:11px;border-radius:20px;padding:1px 9px}
+.done{color:var(--done)} .done .b{background:color-mix(in srgb,var(--done) 14%,transparent);color:var(--done)}
+.prog .b{background:color-mix(in srgb,var(--prog) 16%,transparent);color:var(--prog)}
+.pend{color:var(--mut)} .pend .b{background:color-mix(in srgb,var(--pend) 14%,transparent);color:var(--pend)}
+.next{outline:2px solid var(--prog);outline-offset:-2px;border-radius:8px;padding:6px 8px!important}
+.note{font-size:12px;color:var(--mut);margin-top:6px}
+.tag{font-size:11px;color:var(--mut)}
+</style></head><body>
+<h1>Paper 2 — GovernRAG Governance-Frontier Evaluation</h1>
+<div class="sub">Updated 2026-07-20 afternoon — Sprints 7A+7B COMPLETE · 7C: committee comms first · one task at a time, top to bottom · repo: GovernRAG1 · branch paper2-spectrum</div>
+
+<div class="card"><h2>Campaign — complete &amp; sealed</h2><ul>
+<li class="done"><span class="b">DONE</span>Run 1 — DelucionQA full benchmark: 912 q, 8,208 judged pairs, H1–H4 analyzed <span class="tag">tag run1-complete · archive + SHA-256 + read-only</span></li>
+<li class="done"><span class="b">DONE</span>Run 2 — HAGRID (K=150, 163 q): built, served, judged (1,467 pairs, 0 errors) <span class="tag">tag run2-complete · $≈14 day</span></li>
+<li class="done"><span class="b">DONE</span>Run 3 — ExpertQA (K=150 drop-junk, 150 q): built, served, judged (1,350 pairs, 0 errors) <span class="tag">tag run3-complete</span></li>
+<li class="done"><span class="b">DONE</span>Model migration survived: 4 withdrawals in one day → build 3.1-flash-lite, judge 3.1-pro-preview; all deviation-logged pre-execution</li>
+<li class="done"><span class="b">DONE</span>Hardening: B5 build runner, B4 run-guard, E3P (timeout+worker-guard), launcher, bidirectional serve map, Q3 empty-evidence state</li>
+<li class="done"><span class="b">DONE</span>Anti-cherry-picking: validity doc (4 tests + §2b junk filter), representativeness tables (ExpertQA old-K + HAGRID), selection manifests + hashes</li>
+<li class="done"><span class="b">DONE</span>Evidence packs: Run2 (8 screenshots + note) · Run3 (3 screenshots + note) · key attribution confirmed (conceptual-GraphRAG)</li>
+<li class="done"><span class="b">DONE</span>Cross-run analysis DRAFT v1: 3-corpus frontier, H1–H4 matrix, measured ontology-fit moderator (98.2/47.2/25.8% → slope/band/cliff)</li>
+</ul></div>
+
+<div class="card"><h2>Sprint 7A — Analysis</h2><ul>
+<li class="done"><span class="b">DONE</span>7A-1&nbsp; Run-1 re-judge: 8,208 pairs, 0 errors; archive verified 47/47 before+after; sealed results\run1_rejudge\</li>
+<li class="done"><span class="b">DONE</span>7A-2&nbsp; Judge agreement κ=0.681; structure judge-invariant, levels judge-dependent; H1 judge-sensitive</li>
+<li class="done"><span class="b">DONE</span>7A-3&nbsp; H4 runs 2–3: 100.0% / 100.0% resolvable citations — supported on all three corpora</li>
+<li class="done"><span class="b">DONE</span>7A-4&nbsp; Run-1 paired bootstrap (B=10k): Δacc CI both judges; ΔcorrRef +.25..+.50 robust <span class="tag">runs 2–3 CIs = optional backlog</span></li>
+<li class="done"><span class="b">DONE</span>7A-5&nbsp; Frontier_ThreeCorpora.png — CVD-validated, consistent judge, committed</li>
+</ul></div>
+
+<div class="card"><h2>Sprint 7B — Closeouts</h2><ul>
+<li class="done"><span class="b">DONE</span>7B-1&nbsp; Run2_Manifest.yaml — models, incidents, attribution, ≈$13–15</li>
+<li class="done"><span class="b">DONE</span>7B-2&nbsp; Run3_Manifest.yaml — ≈$30 block, boundary disclosed</li>
+<li class="done"><span class="b">DONE</span>7B-3&nbsp; Run-3 representativeness table: junk filter moved selection CLOSER to population</li>
+<li class="done"><span class="b">DONE</span>7B-4&nbsp; PROJECT_STATUS + RESEARCH_LOG + tracker refreshed (this update)</li>
+</ul></div>
+
+<div class="card"><h2>Sprint 7C — Positioning</h2><ul>
+<li class="prog next"><span class="b">NEXT</span>7C-3a&nbsp; <b>Email A</b> — findings brief to Dr. Xu + Dr. Wang (figure + dial supplement attached; TPS-primary direction stated)</li>
+<li class="prog next"><span class="b">NEXT</span>7C-3b&nbsp; <b>Email B</b> — Dr. Talburt: results + graduation-requirement questions (venue types · accepted-vs-published · latest date)</li>
+<li class="done"><span class="b">DONE</span>7C-4&nbsp; Venue scan → Venue_Options.md (TPS primary Aug 15→Sept 20 · AAAI-FSS hedge Aug 1→Aug 15 · Big Data workshops fallback · ESWC/ICKG 2027 for paper A) <span class="tag">keep watching CfPs</span></li>
+<li class="pend"><span class="b">PEND</span>7C-5&nbsp; Venue LOCK after committee replies → gates Sprint 8 framing</li>
+<li class="pend"><span class="b">PEND</span>7C-1&nbsp; Prior-art delta vs Feb/Jun 2026 governance-RAG papers</li>
+<li class="pend"><span class="b">PEND</span>7C-2&nbsp; OKF paragraph (one-paragraph interop evidence)</li>
+<li class="pend"><span class="b">PEND</span>7C-6&nbsp; Decide by Jul 24: optional pre-registered run 4 (moderator prediction test, ~$25, one evening)</li>
+</ul></div>
+
+<div class="card"><h2>Sprint M — Build the Master (Jul 22–31) · Sprint E — Extract → TPS (Aug 1–15)</h2><ul>
+<li class="done"><span class="b">DONE</span>M-1&nbsp; Proposal-contribution map + program timeline (in both masters)</li>
+<li class="done"><span class="b">DONE</span>M-2/M-2b/M-3&nbsp; Combined-master ports + 2026 prior-art delta (KG-as-authorization-gate positioning)</li>
+<li class="done"><span class="b">DONE</span>PIVOT (7/22)&nbsp; <b>Paper-2-only master at FULL DEPTH</b> — 02 GovRAG Paper2\GovRAG_Paper2_Master (46 pp / 16.3k words): ch 2/4/5/7.1 verbatim source docs (deviation log, validity, metrics, manifests, cross-run analysis); ch 1/3.3/6/7.2/9 fresh-written</li>
+<li class="prog next"><span class="b">NEXT</span>M-R&nbsp; <b>Vivek review of fresh chapters (1, 3.3, 6, 7.2, 9)</b> → markups → revision cycle, one chapter at a time</li>
+<li class="pend"><span class="b">PEND</span>M-9&nbsp; Read-through + unified references + <b>master v1.0</b> (target Jul 30)</li>
+<li class="pend"><span class="b">PEND</span>M-10 (Jul 31)&nbsp; <b>QASC GATE</b> → pick extraction recipe S1/S2 (recipes in master front matter)</li>
+<li class="pend"><span class="b">PEND</span>E-1..E-5 (Aug 1–15)&nbsp; Extract → IEEE template → compress → Dr. Xu review → <b>SUBMIT TPS Aug 15</b> → notify Sept 20</li>
+</ul><div class="note">Full plan: Paper2\1_Planning\Master_Sprint_Plan.md · Master doc: 5_Manuscript\GovRAG_Master.md · 7C-1/7C-2 absorbed into M-2b/ch-2</div></div>
+<div class="card"><h2>Sprint 8 (absorbed into Sprints M+E) · CALENDAR: Jul 21–31 CORE drafting → Jul 31 QASC gate → Aug 1–14 assembly → Aug 15 TPS → Sept 20 decision</h2><ul>
+<li class="pend"><span class="b">PEND</span>8-1&nbsp; Skeleton from pre-committed text (Methods/Limitations in validity doc; deviation log = appendix)</li>
+<li class="pend"><span class="b">PEND</span>8-2&nbsp; Results: slope/band/cliff frontier; H1 parity in-ontology only; H2 ceiling (reframe: abstention + auditability); G2 stable benefit ~75–78% corrRef, corpus-dependent price</li>
+<li class="pend"><span class="b">PEND</span>8-3&nbsp; Figures: frontier ×3, risk–coverage, moderator plot, cost table</li>
+<li class="pend"><span class="b">PEND</span>8-4&nbsp; Threats to validity (judge change + dual-judge evidence, model churn, probe scope, single gen model, M4 nondeterminism, exploratory moderator)</li>
+<li class="pend"><span class="b">PEND</span>8-5&nbsp; Advisor draft → Dr. Xu cycle → submission package</li>
+</ul></div>
+
+<div class="card"><h2>Parked / user-side</h2><ul>
+<li class="pend"><span class="b">PARK</span>Delete exposed old API key (AIzaSyDIco…) in AI Studio, if not already done</li>
+<li class="pend"><span class="b">PARK</span>Run-context refactor proposal (global run config over frozen paths) — post-manuscript</li>
+<li class="pend"><span class="b">PARK</span>Confirmatory in-ontology study (FinQA/CUAD) — future work section, not this paper</li>
+<li class="pend"><span class="b">PARK</span>Zenodo/OSF DOI deposit at submission time</li>
+</ul>
+<div class="note">Standing rules: frozen/baseline/harness code changes require Vivek's approval · deviations logged + pushed BEFORE execution · archives are append-only, hashed, read-only.</div></div>
+</body></html>

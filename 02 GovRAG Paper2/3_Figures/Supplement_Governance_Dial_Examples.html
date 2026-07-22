@@ -1,0 +1,200 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>The Governance Dial — Worked Examples (GovernRAG Paper 2)</title><style>
+:root{--bg:#faf9f5;--card:#fff;--ink:#1a1915;--sec:#52514e;--mut:#8a8577;--line:#e8e5da;
+--good:#0ca30c;--refuse:#8a8577;--block:#d03b3b;--accent:#2a78d6;--mono:Consolas,ui-monospace,monospace}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1915;--card:#242320;--ink:#eceade;--sec:#c3c2b7;--line:#3a382f;--good:#7fc98f;--block:#e08573;--accent:#3987e5}}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);margin:0;padding:26px;line-height:1.5;max-width:1000px;margin-inline:auto}
+h1{font-size:21px;margin:0 0 4px} h2{font-size:15px;margin:34px 0 4px;border-bottom:2px solid var(--line);padding-bottom:5px}
+.sub,.psub{color:var(--sec);font-size:13.5px;margin-bottom:8px;max-width:75ch}
+.dial{display:flex;gap:6px;margin:12px 0 8px;flex-wrap:wrap}
+.dial span{font-size:11.5px;border:1px solid var(--line);border-radius:20px;padding:3px 10px;color:var(--sec);background:var(--card)}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0}
+.corpus{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent)}
+.q{font-size:16px;font-weight:650;margin:4px 0 2px}
+.meta{font-size:11.5px;color:var(--mut);margin-bottom:10px}
+.lesson{font-size:12.8px;color:var(--sec);border-left:3px solid var(--accent);padding:6px 12px;margin:0 0 12px;background:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:0 8px 8px 0}
+.row{display:grid;grid-template-columns:118px 1fr 158px;gap:12px;padding:9px 0;border-top:1px solid var(--line);align-items:start}
+.lvl{font-weight:700;font-size:12.6px}
+.lvl small{display:block;font-weight:400;color:var(--mut);font-size:10.3px;line-height:1.3;margin-top:2px}
+.out{font-family:var(--mono);font-size:11.9px;background:color-mix(in srgb,var(--ink) 4%,transparent);border-radius:8px;padding:8px 11px;white-space:pre-wrap;max-height:230px;overflow:auto}
+.out .cit{color:var(--accent);font-weight:600}
+.st{font-size:10.8px;font-weight:700;border-radius:20px;padding:3px 9px;text-align:center;white-space:nowrap;justify-self:end}
+.g{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good)}
+.r{background:color-mix(in srgb,var(--refuse) 16%,transparent);color:var(--refuse)}
+.b{background:color-mix(in srgb,var(--block) 12%,transparent);color:var(--block)}
+.prov{font-size:11px;color:var(--mut);margin-top:26px;border-top:1px solid var(--line);padding-top:10px;max-width:92ch}
+</style></head><body>
+<h1>The governance dial — worked examples</h1>
+<div class="sub">The same document collection, the same question, the governance knob turned one click at a
+time. Every output is <b>verbatim</b> from the sealed run archives; correctness verdicts are from the
+independent LLM judge (gemini-3.1-pro-preview). Generation model identical in every row — the only thing
+that changes is governance.</div>
+<div class="dial"><span><b>G0</b> · no governance (naive RAG)</span><span><b>G1</b> · answers must cite sources</span>
+<span><b>G2</b> · evidence must be authorized &amp; grounded</span><span><b>G3</b> · strict authorization</span>
+<span><b>G4</b> · corroboration required</span></div><h2>Part A — Feel the knob (one corpus, DelucionQA: document and domain held constant)</h2><div class="psub">A1 · The staircase: the answer survives, tightens, then stops.</div><div class="ex"><div class="corpus">A1 · Staircase (recommended)</div>
+<div class="q">&ldquo;Can the steering wheel warm up in winter?&rdquo;</div>
+<div class="meta">Answerable · staircase profile · record delucionqa_q00239</div>
+<div class="lesson">Four distinct behaviors in five clicks: plain answer → cited answer with extra detail → visibly narrower answer from a stricter evidence pool → blocked. The knob is doing something different at every setting.</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the provided context, yes. The steering wheel contains a heating element designed to help warm your hands in cold weather.</div><div class="st g">✓ correct — uncited</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">Yes, the steering wheel can warm up in cold weather. It contains a heating element designed to help warm your hands <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_2647, CHNK_RPUS_CUSTOMER_SUPPOR_2657]</span>. Additionally, when Remote Start is activated in cold weather, the heated steering wheel will automatically turn on if it is programmed in the Comfort menu screen within Uconnect Settings <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_2653]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">Yes, the vehicle features a heated steering wheel. The heated steering wheel button is located on the center of the instrument panel below the radio screen, and within the Climate or Controls screen of the touchscreen <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_2652]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div></div><div class="ex"><div class="corpus">A1 · Staircase (alternate)</div>
+<div class="q">&ldquo;Is the internal wireless radio safe for human?&rdquo;</div>
+<div class="meta">Answerable · staircase profile · record delucionqa_q00004</div>
+<div class="lesson">Same profile on a safety-flavored question: the citation appears at G1, the answer tightens to the FCC-limits core at G2, and strict authorization declines from G3.</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the provided context, the radio manufacturer believes the internal wireless radio is safe for use by consumers. 
+
+Additionally, the context states that:
+* The radiated output power of the radio is far below the FCC and IC radio frequency exposure limits.
+* It operates within guidelines found in radio frequency safety standards and recommendations.
+* It must be used in a manner where the radio is 8 inches (20 cm) or further from the human body.</div><div class="st g">✓ correct — uncited</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">Yes, the radio manufacturer believes the internal wireless radio is safe for use by consumers <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_58]</span>. 
+
+The device operates within guidelines found in radio frequency safety standards and recommendations, and its radiated output power is far below the FCC and IC radio frequency exposure limits <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_58]</span>. However, to ensure safety, the wireless radio must be used in such a manner that it remains 8 inches (20 cm) or further from the human body <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_58]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">Yes, the radio manufacturer believes the internal wireless radio is safe for use by consumers. Its radiated output power is far below the FCC and IC radio frequency exposure limits, provided it is used in a manner where the radio is 8 inches (20 cm) or further from the human body <span class="cit">[CHNK_PRIMARY]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div></div><div class="ex"><div class="corpus">A1 · Staircase (alternate, long-form)</div>
+<div class="q">&ldquo;Any tips for hill climbing?&rdquo;</div>
+<div class="meta">Answerable · staircase profile · record delucionqa_q00193</div>
+<div class="lesson">A multi-part advisory answer that shrinks as evidence tightens — G1 cites per tip, G2 keeps only primary-chunk-grounded tips, G3 declines.</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the provided text, here are the tips for hill climbing:
+
+**Preparation and Assessment**
+*   **Know your limits:** Have a good understanding of your abilities and your vehicle&#x27;s limitations. Only attempt a climb if you feel confident.
+*   **Assess the hill before proceeding:** 
+    *   Consider its grade (steepness) and determine if it is too steep.
+    *   Check the traction on the trail.
+    *   Ensure the trail goes straight up and down.
+    *   Look at what is on top and on the other side of the hill.
+    *   Check for obstacles like ruts, rocks, or branches.
+    *   Make sure you can safely recover the vehicle if something goes wrong.
+
+**Climbing Technique**
+*   **Drive straight:** Always climb hills straight up and down. Never attempt to climb a hill at an angle or turn around on a steep grade, as driving across an incline increases the risk of a rollover.
+*   **Gear selection:** Shift the transmission into a lower gear with 4L engaged.
+*   **Line up and accelerate:** Line your vehicle up for the straightest possible run. Accelerate with an easy, constant throttle and apply more power as you start up. Do not race forward into a steep grade.
+*   **Maintain momentum:** Proceed with caution and maintain your momentum as you climb.
+*   **Approaching the crest:** As you approach the crest of the hill, ease off the throttle and slowly proceed over the top.
+
+**Handling Obstacles and Issues**
+*   **If the front end bounces:** Ease off the throttle slightly to bring all four tires back down to the ground.
+*   **If the wheels slip near the crest:** Ease off the accelerator and maintain headway by quickly turning the steering wheel back and forth (no more than a quarter turn) to gain traction.
+*   **If you stall, lose headway, or do not make it to the top:** 
+    *   Bring the vehicle to a stop and immediately apply the brake.
+    *   Restart the engine and shift into REVERSE.
+    *   Back straight down the hill slowly, allowing engine braking/resistance to control the descent. Apply your brakes if necessary, but do not allow the tires to lock.</div><div class="st g">✓ correct — uncited</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">Based on the provided evidence, here are the key tips for hill climbing:
+
+* **Preparation and Assessment**: Hill climbing **requires** good judgment and a solid understanding of your vehicle&#x27;s limitations <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_224]</span>. Before attempting a climb, evaluate the hill&#x27;s grade, check the traction on the trail, look for obstacles (such as ruts, rocks, or branches), and ensure you can safely recover the vehicle if something goes wrong <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_225]</span>.
+* **Gear Selection**: Shift the transmission into a lower gear with 4L **engaged**, and proceed with caution while maintaining your momentum <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_219, CHNK_RPUS_CUSTOMER_SUPPOR_226]</span>.
+* **Alignment**: Always climb hills straight up and down. Never attempt to climb a hill at an angle or turn around on a steep grade, as driving across an incline increases the risk of a rollover <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_213, CHNK_RPUS_CUSTOMER_SUPPOR_224]</span>. Line your vehicle up for the straightest possible run <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_209]</span>.
+* **Throttle Control**: Accelerate with an easy, constant throttle and apply more power as you start up the hill <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_209]</span>. Do not race forward into a steep grade, as abrupt changes in grade can cause a loss of control <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_210]</span>.
+* **Handling Vehicle Bounce and Wheel Slip**: 
+  * If the front end begins to bounce, ease off the throttle slightly to bring all four tires back to the ground <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_210]</span>.
+  * If the wheels start to slip as you approach the crest, ease off the accelerator and maintain headway by quickly turning the steering wheel back and forth no more than a quarter turn to get a fresh &quot;bite&quot; into the surface <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_211, CHNK_RPUS_CUSTOMER_SUPPOR_4677]</span>.
+* **Crest of the Hill**: As you approach the crest, ease off the throttle and slowly proceed over the top <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_211]</span>.
+* **If You Do Not Make It or Stall**: If you stall or lose headway, bring the vehicle to a stop and immediately apply the brakes <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_2300]</span>. Place the vehicle in REVERSE and back straight down the grade slowly, allowing engine braking/resistance to control the descent. Apply the brakes if necessary, but do not allow the tires to lock <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_212, CHNK_RPUS_CUSTOMER_SUPPOR_215, CHNK_RPUS_CUSTOMER_SUPPOR_2300]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">Based on the provided evidence, tips for hill climbing include:
+
+* It requires good judgment and a thorough understanding of your abilities and your vehicle&#x27;s limitations <span class="cit">[CHNK_PRIMARY]</span>.
+* You should always feel confident with the vehicle and your abilities before attempting a climb <span class="cit">[CHNK_PRIMARY]</span>.
+* Always climb hills straight up and down <span class="cit">[CHNK_PRIMARY]</span>.
+* Avoid attempting to climb hills that are too steep, as they can cause serious problems <span class="cit">[CHNK_PRIMARY]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div></div><div class="psub">A2 · The reshaper: the system answers at every level, but the answer visibly changes.</div><div class="ex"><div class="corpus">A2 · Reshaping (recommended)</div>
+<div class="q">&ldquo;How can I avoid fuel overfilling?&rdquo;</div>
+<div class="meta">Answerable · answers at all levels · record delucionqa_q00142</div>
+<div class="lesson">Governance never refuses here — instead the answer degrades gracefully: crisp advice at G0, three citations at G1, then a terse single-citation answer from G2 up. The knob reshapes the answer rather than stopping it.</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the provided context, you can avoid fuel overfilling by not &quot;topping off&quot; the fuel tank after filling.</div><div class="st g">✓ correct — uncited</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">To avoid fuel overfilling, do not &quot;top off&quot; the fuel tank after filling <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_232], [CHNK_RPUS_CUSTOMER_SUPPOR_1809], [CHNK_RPUS_CUSTOMER_SUPPOR_1846]</span>. Additionally, the manual warns against overfilling.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">To avoid overfilling, refer to the manual, which warns about overfilling <span class="cit">[CHNK_PRIMARY]</span>.</div><div class="st b">✗ answered — judge: WRONG</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">To avoid overfilling, refer to the manual, which warns about overfilling <span class="cit">[CHNK_PRIMARY]</span>.</div><div class="st b">✗ answered — judge: WRONG</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">To avoid overfilling, refer to the manual, which warns of overfilling <span class="cit">[CHNK_PRIMARY]</span>.</div><div class="st b">✗ answered — judge: WRONG</div></div></div><div class="ex"><div class="corpus">A2 · Reshaping (alternate)</div>
+<div class="q">&ldquo;What is the distance range that the remote start system can reach?&rdquo;</div>
+<div class="meta">Answerable · answers at all levels · record delucionqa_q00081</div>
+<div class="lesson">The factual core (328 ft / 100 m) is stable at every level while the citation set visibly grows and re-forms as each gate re-filters the evidence — provenance itself is what the knob tunes.</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the provided context, the remote start system has a range of approximately 328 ft (100 m) for diesel vehicles, and 328 ft (100 m) for gasoline vehicles. Obstructions between the vehicle and the key fob may reduce this range.</div><div class="st g">✓ correct — uncited</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">The remote start system has a range of approximately 328 ft (100 m) <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_249] [CHNK_RPUS_CUSTOMER_SUPPOR_1202] [CHNK_RPUS_CUSTOMER_SUPPOR_1208]</span>. This range may be reduced by obstructions between the vehicle and the key fob <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_250]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">The Remote Start system has a range of approximately 328 ft (100 m) <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_1202, CHNK_RPUS_CUSTOMER_SUPPOR_1207, CHNK_RPUS_CUSTOMER_SUPPOR_1288, CHNK_RPUS_CUSTOMER_SUPPOR_4707]</span>, or 328 ft (100 m) for gasoline models <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_1208, CHNK_RPUS_CUSTOMER_SUPPOR_1282]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">The Remote Start system has a range of approximately 328 ft (100 m) <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_1202, CHNK_RPUS_CUSTOMER_SUPPOR_1207, CHNK_RPUS_CUSTOMER_SUPPOR_1208, CHNK_RPUS_CUSTOMER_SUPPOR_1282, CHNK_RPUS_CUSTOMER_SUPPOR_1288, CHNK_RPUS_CUSTOMER_SUPPOR_4707]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">The Remote Start system has a range of approximately 328 ft (100 m) <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_1202, CHNK_RPUS_CUSTOMER_SUPPOR_1207, CHNK_RPUS_CUSTOMER_SUPPOR_1288, CHNK_RPUS_CUSTOMER_SUPPOR_4707]</span>, or 328 ft (100 m) for gasoline models <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_1208, CHNK_RPUS_CUSTOMER_SUPPOR_1282]</span>.</div><div class="st g">✓ correct + cited</div></div></div><div class="psub">A3 · The cost: governance overreaches — the failure case, reported not hidden.</div><div class="ex"><div class="corpus">A3 · False rejection (recommended)</div>
+<div class="q">&ldquo;What does the Cruise Control do?&rdquo;</div>
+<div class="meta">Answerable · false-rejection profile · record delucionqa_q00022</div>
+<div class="lesson">A trivially answerable question with judged-correct answers at G0 and G1 — refused from G2 upward. This is one of the 54% of answerable DelucionQA questions lost at the authorization step: the coverage price of strictness, embodied.</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the provided context, when engaged, the Cruise Control system takes over accelerator operations at speeds greater than 20 mph (32 km/h). Additionally, if you press the accelerator to pass while Cruise Control is set, the system will return the vehicle to the set speed once the pedal is released.</div><div class="st g">✓ correct — uncited</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">When engaged, the Cruise Control system takes over accelerator operations at speeds greater than 20 mph (32 km/h) <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_370, CHNK_RPUS_CUSTOMER_SUPPOR_1298, CHNK_RPUS_CUSTOMER_SUPPOR_4828]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">Governance Boundary: Evidence insufficient.</div><div class="st r">— refused</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">Governance Boundary: Evidence insufficient.</div><div class="st r">— refused</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">Governance Boundary: Evidence insufficient.</div><div class="st r">— refused</div></div></div><div class="ex"><div class="corpus">A3 · False rejection (alternate)</div>
+<div class="q">&ldquo;If a tire is marked C, what does this mean?&rdquo;</div>
+<div class="meta">Answerable · false-rejection profile · record delucionqa_q00021</div>
+<div class="lesson">Same failure with the harder block message: a correct multi-part answer at G1, then authorization refuses the tire-grading evidence outright.</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the provided context, a tire marked &quot;C&quot; can mean two things depending on the grading category:
+
+1. **Traction:** A tire marked C may have poor traction performance (representing the lowest traction grade).
+2. **Temperature:** The grade C corresponds to the minimum level of performance (resistance to heat generation and ability to dissipate heat) that all passenger vehicle tires must meet under the Federal Motor Vehicle Safety Standard No. 109.</div><div class="st g">✓ correct — uncited</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">Depending on the category, a tire marked **C** indicates the following:
+
+*   **Traction Grade:** A tire marked C may have poor traction performance, which represents its ability to stop on wet pavement under controlled conditions <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_364], [CHNK_RPUS_CUSTOMER_SUPPOR_366]</span>.
+*   **Temperature Grade:** It represents the tire&#x27;s resistance to the generation of heat and its ability to dissipate heat when tested under controlled laboratory conditions <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_364], [CHNK_RPUS_CUSTOMER_SUPPOR_368]</span>. This grade corresponds to the minimum level of performance that all passenger vehicle tires must meet under the Federal Motor Vehicle Safety Standard No. 109 <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_364]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div></div><div class="ex"><div class="corpus">A3 · Non-monotone curiosity (limitations footnote, not headline)</div>
+<div class="q">&ldquo;The engine fails to start. What can I do now?&rdquo;</div>
+<div class="meta">Answerable · non-monotone profile · record delucionqa_q00016</div>
+<div class="lesson">An honest oddity: G2 refuses, but G3/G4 answer — with worse content from a different evidence slice. The gate stack is not perfectly nested; disclosed in Limitations.</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the provided context, if your engine fails to start (and the vehicle has not experienced an extended park condition), it may be flooded. You can take the following steps:
+
+* **Clear a flooded engine:** 
+  1. Push the accelerator pedal all the way to the floor and hold it there.
+  2. Crank the engine for no more than 10 seconds. (To prevent starter damage, do not continuously crank for more than 10 seconds at a time, and wait 10 to 15 seconds before trying again).
+  3. Leave the ignition key in the ON/RUN position, release the accelerator pedal, and repeat the “Normal Starting” procedure.
+
+* **If the battery is discharged:** You can use booster cables to start the vehicle from a booster battery or the battery of another vehicle. 
+
+* **If the issue is poor quality gasoline:** If poor quality gasoline is causing hard starting, try using another brand of gasoline before seeking service.
+
+**What NOT to do:**
+* Do **not** pour fuel or any other flammable liquid into the throttle body air inlet opening.
+* Do **not** attempt to push or tow your vehicle to get it started.</div><div class="st g">✓ correct — uncited</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">If the engine fails to start after the operator **performs** the &quot;Normal Starting&quot; procedure, the engine may be flooded <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_260, CHNK_RPUS_CUSTOMER_SUPPOR_641]</span>. When the vehicle **requires** a **start**, you can take the following actions:
+
+1. **Clear a Flooded Engine**: Push the accelerator pedal all the way to the floor and hold it there. Crank the engine for no more than 10 seconds to clear excess fuel <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_260, CHNK_RPUS_CUSTOMER_SUPPOR_642]</span>. Then, leave the ignition key in the ON/ RUN position, release the accelerator pedal, and repeat the &quot;Normal Starting&quot; procedure <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_260, CHNK_RPUS_CUSTOMER_SUPPOR_643]</span>.
+2. **Protect the Starter**: To prevent damage, do not continuously crank the engine for more than 10 seconds at a time. Wait 10 to 15 seconds before attempting to **start** again <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_116, CHNK_RPUS_CUSTOMER_SUPPOR_264]</span>.
+3. **Jump Starting**: If the vehicle has a discharged battery, booster cables may be used to obtain a **start** from a booster battery or another vehicle&#x27;s battery <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_263, CHNK_RPUS_CUSTOMER_SUPPOR_1802]</span>.
+4. **Avoid Push/Tow Starting**: Do not attempt to push or tow your vehicle to get it started, as vehicles with automatic transmissions cannot be started this way, and unburned fuel could damage the catalytic converter <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_262, CHNK_RPUS_CUSTOMER_SUPPOR_1801]</span>.
+5. **Do Not Use External Fuel**: Never pour fuel or other flammable liquids into the throttle body air inlet opening to attempt a **start**, as this can cause a flash fire <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_261, CHNK_RPUS_CUSTOMER_SUPPOR_1800]</span>.
+6. **Check Fuel Quality**: If poor quality gasoline is causing hard starting, try using another brand of gasoline <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_268, CHNK_RPUS_CUSTOMER_SUPPOR_3368, CHNK_RPUS_CUSTOMER_SUPPOR_4571]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">Governance Boundary: Evidence insufficient.</div><div class="st r">— refused</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">Based on the provided evidence, you must not operate the engine with failed parts. You should be alert for changes in performance, sounds, and visual evidence (such as severe vibrating, misfiring, sudden loss of power, unusual noises, or leaks) indicating that the engine requires service <span class="cit">[CHNK_PRIMARY]</span>. To attempt a start, the operator performs the Normal Starting procedure [Tier 1 Symbolic Triplets].</div><div class="st b">✗ answered — judge: WRONG</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">Based on the provided evidence, you must not operate the engine with failed parts. You should be alert for changes in performance, sounds, and visual evidence (such as severe vibrating, misfiring, sudden loss of power, unusual noises, or leaks) indicating that the engine requires service <span class="cit">[CHNK_PRIMARY]</span>. To attempt a start, the operator performs the Normal Starting procedure [Tier 1 Symbolic Triplets].</div><div class="st b">✗ answered — judge: WRONG</div></div></div><h2>Part B — The same knob across three corpora (why the frontier has three shapes)</h2><div class="ex"><div class="corpus">B1 · DelucionQA — the slope (98% ontology-aligned)</div>
+<div class="q">&ldquo;The LED light on the key fob no longer illuminates.  What does this mean?&rdquo;</div>
+<div class="meta">Answerable · in-ontology corpus · record delucionqa_q00036</div>
+<div class="lesson">On the in-ontology corpus the dial degrades gracefully: the answer survives three tightening steps with an auditable citation, and only multi-source corroboration declines.</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the provided context, if the LED light on the key fob no longer illuminates from button pushes, it means that the key fob battery requires replacement.</div><div class="st g">✓ correct — uncited</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">This indicates that the key fob battery requires replacement <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_582]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">This means that the key fob battery requires replacement <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_582]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">This means that the key fob battery requires replacement <span class="cit">[CHNK_RPUS_CUSTOMER_SUPPOR_582]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div></div><div class="ex"><div class="corpus">B2 · HAGRID — the cliff (26% aligned)</div>
+<div class="q">&ldquo;What state is directly north of North Carolina?&rdquo;</div>
+<div class="meta">Answerable · out-of-ontology corpus · record hagrid_run2_q00007</div>
+<div class="lesson">A correct cited answer at G1 that G2 cannot certify: wiki geography has no governed vocabulary, so authorization has nothing to authorize. Tightening turns a slope into a cliff.</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the context, Virginia is directly north of North Carolina.</div><div class="st g">✓ correct — uncited</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">Virginia is the state directly north of North Carolina <span class="cit">[CHNK_PRIMARY]</span>.</div><div class="st g">✓ correct + cited</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st b">✗ blocked</div></div></div><div class="ex"><div class="corpus">B3 · ExpertQA — where governance beats naive</div>
+<div class="q">&ldquo;Why do pregnant women often suffer from iron deficiency?&rdquo;</div>
+<div class="meta">NOT answerable from corpus · abstention probe · record expertqa_run3_q00065</div>
+<div class="lesson">The evidence for this question is not in the corpus. Naive answers anyway — judged WRONG. Every governance level correctly declines. On abstention-heavy corpora this is why governed configurations outscore naive overall (65% vs 55%).</div><div class="row"><div class="lvl">G0 · Naive<small>no governance</small></div>
+<div class="out">Based on the provided context, the explanation is incomplete because the text cuts off. However, the text begins to explain that &quot;it is normal for every woman to see a drop in hemoglobin.&quot;</div><div class="st b">✗ answered — judge: WRONG</div></div><div class="row"><div class="lvl">G1 · Cited<small>citations required</small></div>
+<div class="out">Governance Boundary: Evidence insufficient.</div><div class="st g">✓ correct refusal</div></div><div class="row"><div class="lvl">G2 · Grounded<small>authorized + grounded evidence</small></div>
+<div class="out">Governance Boundary: Evidence insufficient.</div><div class="st g">✓ correct refusal</div></div><div class="row"><div class="lvl">G3 · Strict<small>strict authorization</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st g">✓ correct refusal</div></div><div class="row"><div class="lvl">G4 · Corroborated<small>multi-source corroboration</small></div>
+<div class="out">Governance Boundary: All retrieved evidence violated D5 authorized predicates. Response blocked.</div><div class="st g">✓ correct refusal</div></div></div><div class="prov"><b>Provenance &amp; selection.</b> Examples selected by stated criteria (transition
+profiles quantified in Analysis_CrossRun §2: staircase, reshaping, false-rejection, and each corpus's modal
+pattern) — not for favorability; the false-rejection and non-monotone failure cases are included deliberately.
+All outputs verbatim from SHA-256-sealed archives (results/run1_delucionqa + run1_rejudge, run2_hagrid,
+run3_expertqa; git tags run1/2/3-complete, github.com/gunavivek/GovernRAG1). Judge: gemini-3.1-pro-preview,
+consistent across runs. GovernRAG Paper 2 supplementary material · 2026-07-21.</div></body></html>
