@@ -28,7 +28,7 @@ what does it buy?**
 
 ### 1.2 What this paper contributes
 This paper answers that question with a pre-registered, report-regardless evaluation across
-three RAGBench corpora (1,225 questions; 11,025 judged answer-pairs across all passes),
+three RAGBench corpora (1,225 questions; 11,025 judged pairs, of which 8,208 were additionally re-judged by a second judge),
 made feasible by a build-once/serve-many re-engineering of the execution layer that froze
 every governance decision of Part 1. Contributions:
 
@@ -254,6 +254,12 @@ Report both metrics at every level in the results table (coverage, accuracy-on-a
 Constrained-F1, false-rejection). **Choose the headline only after seeing CF1*.** Pre-registering the three
 phrasings above keeps the choice defensible rather than data-dredged: we are selecting emphasis, not the finding.
 
+**Outcome decision (2026-07-23, recorded 2026-07-25): Scenario B selected (below but
+defensible).** Consistent-judge CF1* (governed best): 0.668 (DelucionQA, G1, re-judge) /
+0.646 (HAGRID, G1) / 0.566 (ExpertQA, G2+OntNU) vs CogniGraph 0.756 (different benchmark,
+not comparable); ExpertQA reversal noted (governed 0.566 > naive 0.502). The Scenario-B
+phrasing block above governs the manuscript framing.
+
 ---
 
 ## 3. Making governed evaluation feasible: build-once / serve-many
@@ -432,6 +438,10 @@ combined < $45 end-to-end (reduced-corpus selection, §4.2).
 ---
 
 ## 4. Evaluation design
+
+*Judge policy (agreed 2026-07-23, recorded 2026-07-25): primary results use the single
+successor judge (gemini-3.1-pro-preview) for all three runs; run 1's initial scoring by the
+withdrawn original judge is retained as an inter-judge robustness study (Paper2_Spine v2.0, F7).*
 
 ### 4.1 Pre-registration and deviation policy (the analysis plan, verbatim, incl. full deviation log)
 

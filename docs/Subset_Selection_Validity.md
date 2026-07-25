@@ -1,4 +1,5 @@
 # Subset Selection Validity — Runs 2–3 (ExpertQA, HAGRID)
+*Updated 2026-07-20: executed Run-3 (drop-junk, 150 q) representativeness table added.*
 *Updated 2026-07-19: HAGRID K=150 representativeness table added (run-order swap: HAGRID is now Run 2).*
 *Methodological justification for reduced-corpus evaluation. Drafted 2026-07-18, before Run-2
 execution. Source for the paper's Methods (corpus construction) and Limitations sections.
@@ -107,6 +108,28 @@ divergences, both structural and disclosed: (a) **answerability skew** (23.9% vs
 answerable) — ExpertQA's most-reused documents attract unanswerable expert questions;
 (b) **docs-per-question** (1.1 vs 3.7) — full-cover selection inherently favors
 few-document questions.
+
+**Run 3 — ExpertQA, K=150 with `--drop-junk` (EXECUTED selection, computed 2026-07-20;
+150 of 2,027; 80 error-page/stub documents excluded before selection; supersedes the
+2026-07-18 pre-filter table above, retained for provenance):**
+
+| Observable | Selected (150) | Population (2,027) |
+|---|---|---|
+| Answerable share | 30.0% | 44.5% |
+| Question length (words, mean) | 17.5 | 19.0 |
+| Gold answer length (words, mean) | 142.7 | 154.0 |
+| Gold relevance (mean) | 0.4 | 0.3 |
+| Gold utilization (mean) | 0.3 | 0.2 |
+| Gold completeness (mean) | 0.7 | 0.6 |
+| Documents per question (mean) | 1.0 | 3.7 |
+| Split mix (train/val/test) | 122/19/9 | 1,621/203/203 |
+
+READ: the junk filter moved the selection CLOSER to the population than the pre-filter
+version on answerability (30.0% vs the earlier 23.9%; population 44.5%) and gold-answer
+length (142.7 vs 135.5; population 154.0), with the gold quality annotations at or above
+population — no evidence of an easier subset. The two structural divergences (N-heavy skew,
+docs-per-question 1.0) are unchanged in kind, disclosed, and constitute the abstention-probe
+design role (§ Complementary-strata).
 
 **Run 2 — HAGRID, K=150 with `--drop-junk` (computed 2026-07-19, selection of 163 of 2,638;
 462 error-page/stub documents excluded before selection per the pre-registered junk filter):**

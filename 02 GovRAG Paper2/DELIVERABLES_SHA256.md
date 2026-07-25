@@ -1,0 +1,18 @@
+# Paper 2 deliverables — SHA-256 manifest
+# Generated 2026-07-25T04:35Z from the on-disk files. Policy: Office binaries stay
+# out of git (.gitignore); their content is timestamped here by hash, like the sealed archives.
+
+c341341af24d77e003a8ecde830cf9e0fb7838b47d63f7c1da0dee782eedb1b2  ./3_Figures/GovernRAG_Architecture_Simple Master.pptx
+c6a3c2484a54a36458cecfe50f83741fc2bfe7576c95640ce06058ea45f92758  ./3_Figures/GovernanceDial_Staircase.pptx
+113868275182de90f28709a5b6b887565b4c82d5ffaf9f471e875e8a9bd57ad4  ./4_Submission/Approval of Publication venue.docx
+d66a9350389000aba6d8b514074094041f3440d3349e86312be326ace2245cfd  ./4_Submission/Conference Venue/00_GovernRAG_Two_Wave_Venue_Strategy_Decision_Record_With_36_Venue_Appendix.docx
+af75d9096654c7e29f786aabae4b1bb925666f653def6e0c3c9fc09b2dfdc899  ./4_Submission/GovernRAG_Paper2_IEEE_Shell.docx
+9570a6d4c12121828c338bc62ce16b686d9d97006e8c85b8ffde5360f77a6b41  ./4_Submission/Paper2_Voice_and_Framing_Guide.docx
+28a4554cdc3ae0163c8f4a425d510df58bd01db66972e0f10f55f876428942ff  ./Abstract_Explained.docx
+52e2e7d0ee41bd44ae65c9408d72ff740a73fcd7f5d1ed83bd4dfbe1b2468fbd  ./Dissertation_to_Paper2_Mapping.docx
+ad588952a7bbd12fc471beb17cd8e963da5e6bd9cafb85e582e97bc971841aaa  ./GovRAG_Paper2_Master.docx
+0d021fd9b0b2444123b81ec718ba99fbb32684dbdde39595329a56ff1354e8a0  ./Paper2_Spine.docx
+c7306b5162bf1da606c697d462b05335d791896abd4070df458f0faa48f045ee  ./Paper2_Venue_Matching_Profile.docx
+a5c78c07d92da6138d0f38b821e9961158c407e9edec53601d4541b820f46541  ./Paper3_Concept_Note.docx
+ccf99087bc2740d54643c628fb59cdde55c5a9c7352e877ab02d429f9530c6fa  ./References.docx
+b15cf314e478c272d5e38e90443936a6e3528bc72b735be0cef65fd041c168d3  ./Source_Register.docx
