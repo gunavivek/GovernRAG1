@@ -75,6 +75,29 @@ anywhere in this manuscript. (Vivek approved corrections 1–4, 2026-07-25.)*
 | risk–coverage frontier | The per-level curve of quality vs coverage across G0–G4; the paper's primary object. |
 | pre-registered | Hypotheses, metrics, stopping rule publicly timestamped before execution; deviations logged before the affected step ran. |
 
+## Metric formulas (locked 2026-07-27 at Vivek's direction — every result number is
+## computed by exactly these definitions, from the frozen E3 evaluator and verified
+## against sealed logs; the Numbers Verification Ledger re-runs them as the gate)
+
+| Metric | Formula (per config, per corpus) | Note |
+|---|---|---|
+| coverage | 1 − (system-refused / N) | system-refused = BLOCKED mode or refusal-text; a judge SAFE_SILENCE verdict on a delivered answer is NOT a system refusal (G0 spontaneous declines) |
+| accuracy (adh) | MATCH ∧ answerable / answerable | refusals count as misses; the answerable stratum, not the answered set |
+| correct-refusal | SAFE_SILENCE ∧ unanswerable / unanswerable | |
+| false rejection | system-refused ∧ answerable / answerable | |
+| faithfulness | mean adherence over answered rows | TRACe-style; report judge label |
+| hallucination-on-answered | 1 − faithfulness | initial judge run 1: 1.2–2.2%; primary judge: 0–0.7% — ALWAYS labelled by judge |
+| token-F1 | mean over (not system-refused ∧ answerable) rows | E3 filter — includes G0 spontaneous declines |
+| governance accuracy (GA) | condition_grade startswith SUCCESS / N | |
+| Constrained-F1 | 0.5 · mean token-F1 + 0.5 · GA | E3's instantiation of CogniGraph's definition |
+| parametric leakage | MATCH ∧ unanswerable / unanswerable | always labelled by judge (primary 23.4/15.6/1.6–7.8; initial 17.2/12.5/4.7–7.8) |
+| auditability (Cited%) | answered-graded with ≥1 [CHNK_*]/[RESIDUAL_*] bracket / answered-graded | detector = has_citations regex (A0 runner) |
+| κ (inter-judge) | Cohen's kappa; jointly graded = both verdicts ≠ SAFE_SILENCE (53.2% of pairs) | raw agreement on jointly graded = 84.1%; κ incl. refusals = 0.863 |
+| H1 point Δ | acc(adh)_G0 − acc(adh)_G1, per judge | initial .034; primary .074 |
+| ontology-aligned share | (M4 result rows − Unmapped) / M3 concept-graph nodes | 3,714/3,781 · 332/703 · 77/298 |
+| amortised latency | Σ seconds over ok B2_serve batches / Σ n_records | per-batch wall-clock, disclosed as amortised |
+| scoped-chunk mean | mean chunk_ids per question over the evaluated-set join | 39.30 / 3.88 / 12.97 |
+
 ## Standard phrases (locked)
 
 - "11,025 judged pairs, of which 8,208 were additionally re-judged by a second judge."

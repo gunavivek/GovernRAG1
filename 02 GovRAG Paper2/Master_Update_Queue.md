@@ -29,8 +29,23 @@ the rejected design alternative, without naming Paper 1.
   inter-judge robustness study (agreed 2026-07-23; matches Paper2_Spine v1.0).
 
 ## SPINE PENDING — awaiting Vivek's "update spine"
-(none — S39 applied 2026-07-26, spine now v2.3; S40 remains PROPOSED in the
-technical queue, not yet ruled on)
+(none — S40, S41, S42(a–e) all applied 2026-07-27; spine now v2.4, arithmetically
+closed per the Numbers Verification Ledger)
+
+## APPLIED 2026-07-27 (Vivek's approval — spine v2.3 → v2.4)
+- **S40** — F3 two-granularity clause (chunk ids at G1; block-level [CHNK_PRIMARY]
+  for ~38% of cited G2+ answers, contents in Q5 log) + T1 root-cause wording replaces
+  "pending T1".
+- **S41** — leakage judge-labelled: primary 23.4/15.6/1.6–7.8% added; initial figures
+  retained with label.
+- **S42a** — H1 primary point Δ .080 → .074; HAGRID .138 → .139; stratum relabelled
+  "answerable-stratum accuracy (refusals as misses)"; band 3–8 → 3–7 pt.
+- **S42b** — leniency direction: spine text already correct (successor judge lenient);
+  no change (the inversion existed only in the W3 draft, fixed there).
+- **S42c** — G2-tier net flip +2.0% → +1.5% (aggregate over 2,005 jointly graded pairs).
+- **S42d** — M4 DelucionQA aligned numerator 3,713 → 3,714 (share unchanged 98.2%).
+- **S42e** — halluc-on-answered judge-labelled: 1.2–2.2% (initial) / 0–0.7% (primary).
+  All per the Numbers Verification Ledger; metric formulas locked in the dictionary.
 
 ## APPLIED 2026-07-26 (Vivek's "update spine" — spine v2.2 → v2.3)
 - **S39 — §4 erratum: evidence-scoping means corrected to 39.3 / 3.9 / 13.0 chunks
@@ -95,9 +110,7 @@ technical queue, not yet ruled on)
   ZERO fabricated citations (0 unresolvable ids in 3,462 cited answers). Q6 check is
   advisory, not blocking. Public footprint = two approved sentences (§V auditability +
   §VII one-liner); full record: 5_Drafts\T1_Unresolved_Citations_RootCause.md.
-- S40 (PROPOSED, awaiting Vivek's ruling): spine F3 granularity clause — G1 cites
-  individual chunk ids; ~38% of cited G2+ answers use the designed block-level
-  [CHNK_PRIMARY] tag whose contents are enumerated in the Q5 decision log.
+- S40 — APPROVED and applied 2026-07-27 (see spine v2.4 log above).
 - **T2 — RESOLVED 2026-07-26 (Vivek approved).** Per-question latency extracted from
   sealed timing_log.csv per run (successful serve batches, amortised): 15.0 s/q
   DelucionQA (13,880 s / 925 records, 37 batches) · 7.4 s/q HAGRID (1 failed batch
