@@ -28,6 +28,38 @@ the rejected design alternative, without naming Paper 1.
   use the single successor judge for all runs; run 1's initial scoring is retained as an
   inter-judge robustness study (agreed 2026-07-23; matches Paper2_Spine v1.0).
 
+## SPINE PENDING — awaiting Vivek's "update spine"
+(none — S39 applied 2026-07-26, spine now v2.3; S40 remains PROPOSED in the
+technical queue, not yet ruled on)
+
+## APPLIED 2026-07-26 (Vivek's "update spine" — spine v2.2 → v2.3)
+- **S39 — §4 erratum: evidence-scoping means corrected to 39.3 / 3.9 / 13.0 chunks
+  per question** (was "about 36 / 3.9 / 13"). Ground truth (T2 analysis pass,
+  2026-07-26, Vivek approved): DelucionQA evaluated-set mean from full serve map ×
+  sealed 912-question join = 39.30 (912/912 matched; min 1, max 139); HAGRID 3.88
+  (n=163); ExpertQA 12.97 (n=150). Manuscript §IV already written to corrected
+  numbers. Note: serve-map files sit in rotated folders (HAGRID map in
+  index\expertqa_run3, DelucionQA in hagrid_run2, ExpertQA in output\) — identified
+  by question counts and means.
+
+## APPLIED 2026-07-26 (Vivek's instruction — spine v2.1 → v2.2)
+- **S38 — §5 figure pointer:** architecture figure is now 3_Figures\GovernRAG_Architecture_
+  Simple Master.pptx (reviewed and code-aligned 2026-07-26: M3 no-bridge, Q1–Q4 stages,
+  Q5 G1–G4, Q6 answer gate, audit-log by-construction wording, authorised spelling,
+  M4 annotation softened to exploratory). Manuscript Figure 1 = diagram frame only;
+  defence footer (contribution map + harness note) cropped at export. Diagram2b remains
+  a design-history artefact.
+
+## APPLIED 2026-07-25 (Vivek's "update spine" — spine v2.0 → v2.1)
+- **S37 — §5 erratum: remove "with recursive bridge discovery" from the modelling-
+  pipeline description.** Ground truth (verified against harness code 2026-07-25,
+  Vivek approved corrections 1–4): no bridge mechanism exists in M1–M5 (M3 = graph
+  construction, M3.3 = concept augmentation); Recursive Bridge Discovery is Q3.5/Q3.6
+  (Paper 1's C2) and was NOT in the Paper-2 executed serve path (B2: Q1→Q2→Q3→Q4→Q5→Q6).
+  Corrected §5 phrase: "…concept and triple extraction, concept graph, ontology
+  alignment, governed index…". Manuscript §III already written to the corrected facts;
+  this item only brings the frozen spine into line.
+
 ## SPINE UPDATE LOG (Paper2_Spine.docx — frozen; edits only on Vivek's "update spine")
 - APPLIED 2026-07-24 (batch, Vivek's "update spine"): S1 claim rewrite with F5 promoted +
   "ontology-derived reference monitor" phrasing · S2 "reference ontology" standard term,
@@ -56,12 +88,23 @@ the rejected design alternative, without naming Paper 1.
   LEDGER NOTE (applies at ledger topic): H1 retains BOTH point deltas (Δ=.034/.080 master notation) and paired-bootstrap CIs (−.018/−.065); use whichever suits the outlet (Vivek 2026-07-24).
 
 ## TECHNICAL PROGRAM QUEUE
-- T1 — Root-cause analysis: <2.3% unresolved citations on DelucionQA (from Spine Topic 4c).
-  Method: query run1 sealed audit metadata for non-resolving citation keys; classify failure
-  mode. Spine §7 discloses the gap until resolved.
-- T2 — Per-question latency (from Spine Topic 9d): pre-registered ("per-question $ and
-  seconds") but not found in any sealed summary. Extract from run logs/timestamps if
-  present; otherwise record non-collection as a dated deviation-log entry + limitation.
+- **T1 — RESOLVED 2026-07-26 (Vivek approved disclosure wording).** Root cause: the
+  1.2–2.3% uncited governed answers (49/3,511; all G2+, none G1) concentrate 47/49 in
+  triplet-derived syntheses — the Q6 citation vocabulary has no triplet tag (chunks +
+  residuals only); tag omitted in ~6% of Tier-1-phrased answers vs ~0.1% elsewhere.
+  ZERO fabricated citations (0 unresolvable ids in 3,462 cited answers). Q6 check is
+  advisory, not blocking. Public footprint = two approved sentences (§V auditability +
+  §VII one-liner); full record: 5_Drafts\T1_Unresolved_Citations_RootCause.md.
+- S40 (PROPOSED, awaiting Vivek's ruling): spine F3 granularity clause — G1 cites
+  individual chunk ids; ~38% of cited G2+ answers use the designed block-level
+  [CHNK_PRIMARY] tag whose contents are enumerated in the Q5 decision log.
+- **T2 — RESOLVED 2026-07-26 (Vivek approved).** Per-question latency extracted from
+  sealed timing_log.csv per run (successful serve batches, amortised): 15.0 s/q
+  DelucionQA (13,880 s / 925 records, 37 batches) · 7.4 s/q HAGRID (1 failed batch
+  excluded, retry counted) · 10.8 s/q ExpertQA. Stage shares: Q2 signature extraction
+  58/91/93%; Q5 monitor <1%. Pre-registered promise fulfilled by extraction — NO
+  deviation entry needed. Reported in §IV.D; granularity caveat (amortised per-batch
+  wall-clock) stated. Analysis record: 5_Drafts\T2_Latency_Extraction.md.
 
 ## CANCELLED / REVERTED
 - **U1 — §1.1 softening.** Applied 2026-07-23, REVERTED same day at Vivek's direction
