@@ -252,3 +252,11 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   Run 1 (Δ=.034 original vs Δ=.080 successor); the paper reports both judges, treats
   frontier structure (judge-invariant) and accuracy levels (judge-dependent) separately,
   and uses the single consistent judge for all cross-run comparisons.
+
+- **2026-08-02 — Anonymised artifact package assembled and published (documentation).** A
+  scrubbed, copy-only package (pre-registration + deviation log, selection code and frozen
+  lists, per-run SHA-256 manifests, run-1 evaluation layer, and the complete run-1R/2/3
+  archives) was assembled for the double-blind venue submission and published via an
+  anonymised mirror. Two execution-state files withheld (local paths; hash lines retained);
+  identity strings neutralised in document copies; no sealed original modified. Publishing
+  artifacts is not a methods change.
