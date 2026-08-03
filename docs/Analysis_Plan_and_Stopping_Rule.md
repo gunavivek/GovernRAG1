@@ -277,3 +277,13 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   64.666... -> printed 64.7 confirmed. Comparison levels now disclosed in the text (G1 /
   G2-tier); a derivability note (GA = Acc*(1-u) + cRef*u, up to rounding) added beside the
   metric definition in Section IV-D.
+
+- **2026-08-03 — Axis-variant Table I differences verified against sealed serve archives
+  (documentation).** Byte-level prompt-identity comparison of G2_Grounded vs G2+OntNU:
+  prompts identical on 874/912 (DelucionQA), 163/163 (HAGRID), 150/150 (ExpertQA). Of the
+  twelve DelucionQA outcome flips between the configs, eleven occurred on byte-identical
+  prompts; HAGRID's single flip (unanswerable q00118, identical prompt) is exactly the
+  printed cRef step 76.9 -> 80.8 (20/26 -> 21/26). The small G2-vs-variant differences in
+  Table I are serving-pass variance at the model-mediated answer gate, not filter effects;
+  an explanatory clause was added to Section V-F, and a no-matched-coverage-baseline
+  rationale sentence to Section II. Rebuttal reserve filed (5_Drafts).
