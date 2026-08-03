@@ -260,3 +260,11 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   anonymised mirror. Two execution-state files withheld (local paths; hash lines retained);
   identity strings neutralised in document copies; no sealed original modified. Publishing
   artifacts is not a methods change.
+- **2026-08-02 — Venue-paper SIII overlap check vs Paper 1: CLEAN (documentation).** Decision
+  recorded: the venue paper keeps its standalone SIII depth (option b of the reviewer's T7).
+  A sentence-level comparison of the full venue manuscript (283 sentences; 43 in SIII)
+  against the submitted Paper 1 manuscript (v25 PDF; 345 sentences) found zero exact and
+  zero near-duplicate sentences (similarity >= 0.80); the sole shared string is the defined
+  six-word term "source document, the atomic unit of governance". The fresh-prose rule for
+  SIII is thereby verified, not merely asserted; no text change required under either QASC
+  outcome.
