@@ -268,3 +268,12 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   six-word term "source document, the atomic unit of governance". The fresh-prose rule for
   SIII is thereby verified, not merely asserted; no text change required under either QASC
   outcome.
+
+- **2026-08-03 — Section V-E derived metrics verified against sealed archives (documentation).**
+  All governance-accuracy values in V-E recomputed verbatim from the sealed evaluation logs
+  under the locked formula (condition_grade SUCCESS*/N): DelucionQA (run-1 re-judge, primary
+  judge) G0 754/912 = 82.7, G1 692/912 = 75.9; HAGRID (run 2) G0 129/163 = 79.1, G1 111/163
+  = 68.1; ExpertQA (run 3) G0 83/150 = 55.3, G2+OntNU 99/150 = 66.0, plain G2 97/150 =
+  64.666... -> printed 64.7 confirmed. Comparison levels now disclosed in the text (G1 /
+  G2-tier); a derivability note (GA = Acc*(1-u) + cRef*u, up to rounding) added beside the
+  metric definition in Section IV-D.
