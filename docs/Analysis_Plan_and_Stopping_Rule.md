@@ -287,3 +287,15 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   Table I are serving-pass variance at the model-mediated answer gate, not filter effects;
   an explanatory clause was added to Section V-F, and a no-matched-coverage-baseline
   rationale sentence to Section II. Rebuttal reserve filed (5_Drafts).
+
+- **2026-08-13 — Pre-submission reference re-verification (documentation; one citation
+  corrected).** Following an external review flag, the produce-the-source test was applied
+  to references [1]-[4]: the primary documents were opened and saved to the prior-art
+  folder for all four (local PDFs for [1] CogniGraph and [2] SITL; IEEE Xplore PDFs for
+  [3], doi:10.1109/ICAISET66439.2026.11541329, and [4], doi:10.1109/SCEECS68810.2026.11429793).
+  All four references stand. One correction: the manuscript's [4] author list ("M. Singh,
+  S. Pandey, S. K. Yadav, B. Gridhar, V. M. Manikandan", taken from a polluted aggregator
+  record) was corrected to the paper's actual author list, "P. Singh, S. Pandey,
+  B. Gridhar, V. M. Manikandan". No results, data, metric definitions, or claims changed.
+  Standing rule adopted: no reference enters the manuscript without its source document
+  saved in 2_Prior_Art.
