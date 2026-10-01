@@ -82,7 +82,18 @@ Recommended pins (2026-10-01 analysis; FINAL strings set only at live probe):
  on one but not the other is itself a publishable bounded-resilience contrast.
 Alternatives considered: Anthropic Claude Haiku class (qualifies on C1–C3, C5; held as ALTERNATE
 if either probe fails); Qwen / Mistral open classes (qualify; Llama preferred on adoption breadth
-and provider determinism options). Rejected: any Gemini-lineage model (C1), any frontier-tier
+and provider determinism options). PRC-origin open families (Qwen, DeepSeek, Kimi/GLM classes): technically QUALIFY on C1/C3/C5
+and are documented as eligible alternates, not rejected on quality. Llama preferred for the
+single open-weights slot on three grounds: (i) tier fit — DeepSeek's flagship open models are
+frontier-scale MoE (above the C2 tier; Qwen does offer tier-matched sizes); (ii) reviewer
+familiarity — Llama is the default open family in the RAG literature the committee knows;
+(iii) deployment-context fit — GovernRAG targets public-sector deployment, and during 2025
+several U.S. states and federal agencies restricted PRC-origin AI models/services on government
+systems; model provenance is itself a governance variable in this dissertation's framing, and
+choosing a family the target context may prohibit would invite a policy debate orthogonal to
+the resilience question. If the committee asks for a Qwen/DeepSeek arm, the sealed-prompt
+replay design makes it a bounded ~$85 follow-up, not a redesign.
+Rejected: any Gemini-lineage model (C1), any frontier-tier
 model (C2).
 
 ## Pre-stated decision rule (goes in the deviation log verbatim, before first token)
@@ -146,6 +157,25 @@ PHASE 0 — gates, once, in order (no spend before 0.4):
  0.5 PILOT: 20 DelucionQA questions x mixed levels per family -> replay -> E3P end-to-end ->
      verify verdict parsing, refusal encoding, and the naive prompt-template reconstruction
      (template = B2_Serve.py naive_baseline(), line ~139, cited by git hash in the manifest).
+
+OVERWRITE PROTECTION (verified 2026-10-01: results/ ROOT currently holds the full run-1 slot —
+20 _spec_* files + serve_results.jsonl; root serve_results.jsonl is MD5-identical to the sealed
+run1_delucionqa/ copy, i.e. root = duplicate of sealed state):
+ O1. Pre-flight hash audit (read-only): every root file the ablation would write is
+     SHA-256-compared against its sealed-archive counterpart; audit report saved.
+ O2. Only a root file PROVEN identical to a sealed copy is MOVED (never deleted, never
+     overwritten) to results/_campaign_slot_run1_<date>/ — fully reversible. Any mismatch ->
+     HARD STOP, no run (a mismatch would mean the seal is not faithful; investigate first).
+ O3. Adapter fail-fast: refuses to write ANY destination that already exists; there is no
+     overwrite mode in the code. It also requires the O1 audit report to exist before writing.
+ O4. E3P outputs isolated by --out-prefix ABL_<f>_<c>: E3P was built for this (its own header:
+     prefixes exist "so run-1's E3_* files are never clobbered"); existing checkpoints are
+     E3_run1*/E3_run2*/E3_run3* — ABL_* collides with nothing.
+ O5. Sealed archives are read-only by construction: the adapter asserts no write path ever
+     contains run1_/run2_/run3_/full_run.
+ O6. Ablation seals go to brand-new dirs ablation_<f>_<c>/, asserted non-existent before create.
+ O7. Each job's slot files are sealed into their ablation dir BEFORE the next job starts, so
+     job N+1 cannot touch job N's outputs.
 
 PER JOB (6 jobs = corpus c in {run1_delucionqa, run2_hagrid, run3_expertqa} x family f in {oai, llama}):
  J1. Slot hygiene: results/ root must hold no stale _spec_*/checkpoint files (quarantine to
