@@ -68,6 +68,18 @@ Chosen (classes, pinned at probe):
  Family 2 (open weights): Meta Llama class (3.3-70B / Llama-4 tier) via hosted inference
      (Together or Groq — Vivek chooses provider at key time). Most widely adopted open family;
      satisfies C4's reproducibility property.
+Recommended pins (2026-10-01 analysis; FINAL strings set only at live probe):
+ Family 1: gpt-5-mini, dated snapshot (current catalog snapshot 2025-08-07 class); in-family
+     backup gpt-4.1-mini. Rationale: OpenAI's serving-tier peer of gemini-3.5-flash (C2);
+     OpenAI lineage already in build provenance (GPT-4o at D3/D4) — no "third lab from nowhere".
+ Family 2: llama-3.3-70b-versatile on Groq (= Llama-3.3-70B-Instruct-Turbo on Together;
+     provider = Vivek's choice at key time); in-family backup: hosted Llama-4-tier equivalent.
+     Rationale: most-adopted open-weights model at tier (C2, C4); weights public -> this arm is
+     PERMANENTLY reproducible, a property no closed API offers.
+ Pair-level justification: the pair spans closed-API + open-weights ecosystems and gives three
+ distinct pretraining lineages across the study (Google campaign / OpenAI / Meta), none equal to
+ the judge family. Structure holding on BOTH generalizes resilience across vendor type; holding
+ on one but not the other is itself a publishable bounded-resilience contrast.
 Alternatives considered: Anthropic Claude Haiku class (qualifies on C1–C3, C5; held as ALTERNATE
 if either probe fails); Qwen / Mistral open classes (qualify; Llama preferred on adoption breadth
 and provider determinism options). Rejected: any Gemini-lineage model (C1), any frontier-tier
@@ -111,6 +123,49 @@ is publishable; only an unrun question is not defensible.
     summary to Dr. Xu → manuscript §8.6 "Cross-family robustness" + §10.2 softening (Batch 29)
     → deck v9 Experiment/Evaluation content → committee email with manuscript + Doodle (both
     late-Oct AND early-Nov windows offered).
+
+## Six-job runbook (operational; exact flags finalized with the approved adapter diff)
+EXECUTION ENVIRONMENT: Vivek's machine, VS Code terminal, SAME venv as the campaign (launcher
+verify first — Start-GovRAG.ps1, 3-line check). Rationale: instrument/environment parity with the
+sealed campaign; API keys stay on his machine as session env vars (never in files, never in chat);
+sealed archives are local; Claude's remote shell caps each command at ~3 minutes — unsuitable for
+multi-hour jobs. Division of labor: Vivek runs the jobs in his terminal; Claude prepares/verifies
+everything through the mounted repo (adapter, manifests, spot-diffs, archive sealing, analysis).
+
+PHASE 0 — gates, once, in order (no spend before 0.4):
+ 0.1 Claude writes AB1_Replay_Serve.py (NEW standalone file; reads sealed archives read-only;
+     --probe, --pilot, --corpus/--provider/--model modes; checkpointed + resumable; asserts
+     byte-identity of prompt fields against the sealed originals on every record) ->
+     presented as a diff -> VIVEK APPROVES -> committed.
+ 0.2 Keys as env vars in the VS Code terminal session only:
+     $env:OPENAI_API_KEY="..."   $env:GROQ_API_KEY="..."   (+ existing Gemini key for E3P judge)
+ 0.3 LIVE PROBE both pins (1-token calls): model-id echo, T=0 accepted, context length, price;
+     probe transcript saved; billing baseline captured.
+ 0.4 Deviation-log entry (design, swap-scope rationale, decision rule, pins, add-on seed, cap)
+     -> git commit + PUSH to GitHub BEFORE the first full-run token.
+ 0.5 PILOT: 20 DelucionQA questions x mixed levels per family -> replay -> E3P end-to-end ->
+     verify verdict parsing, refusal encoding, and the naive prompt-template reconstruction
+     (template = B2_Serve.py naive_baseline(), line ~139, cited by git hash in the manifest).
+
+PER JOB (6 jobs = corpus c in {run1_delucionqa, run2_hagrid, run3_expertqa} x family f in {oai, llama}):
+ J1. Slot hygiene: results/ root must hold no stale _spec_*/checkpoint files (quarantine to
+     results/_quarantine_<date>/ if any — stale-resume hazard from the campaign).
+ J2. Replay:  python AB1_Replay_Serve.py --corpus <c> --provider <f> --model <pinned>
+     Writes into the results/ slot: the four frontier _spec files (prompt fields byte-identical,
+     generated_answer replaced, model identity in metadata) + ablation serve_results.jsonl
+     (naive, from sealed question+context + frozen B2 template).
+ J3. Spot-diff gate (automatic in adapter; manual spot check optional): one record per config
+     diffed vs sealed original -> only generated_answer and model metadata may differ.
+ J4. Judge:   python E3_Parallel_Evaluation.py --serve results/serve_results.jsonl
+              --out-prefix ABL_<f>_<c>        (judge stays default gemini-3.1-pro-preview)
+ J5. Seal:    move slot outputs -> results/ablation_<f>_<c>/ ; SHA-256 manifest; run_manifest.yaml
+     naming pinned model string, spec-file hashes consumed, B2 template hash, timestamps.
+ J6. Billing capture at each family boundary (before/after per family).
+ Order: jobs 1-3 = Family 1 across all three corpora, seal, billing; jobs 4-6 = Family 2 same;
+ JOB 7 (add-on): seeded ~500-pair selection -> second-judge re-judge -> results/ablation_judgeagreement/.
+
+ANALYSIS (after all seals): criteria (a)-(d) per family vs campaign frontier; bootstrap B=10,000
+(new seed from deviation entry); family performance/cost table; add-on kappa.
 
 ## Next session start checklist
 [ ] Verify 15 spec files + hashes  [ ] Vivek provides OpenAI key + hosted-Llama provider key
