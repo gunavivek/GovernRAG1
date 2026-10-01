@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 AB1_Replay_Serve.py -- cross-family ablation replay adapter.  NEW STANDALONE FILE.
+v2.1 (2026-10-02): OpenAI max_completion_tokens rename + User-Agent header (probe findings, approved).
 Draft v2 (2026-10-01): v1 was adversarially reviewed; six defects fixed (slot-owner
 guard, model-pinned checkpoint, manifest overwrite guard, tolerant checkpoint resume,
 naive-context validation, real byte-identity check).  Pending Vivek's approval
@@ -134,12 +135,14 @@ def call_model(provider, model, prompt, tries=6):
     key = os.getenv(cfg["key_env"])
     if not key:
         die("%s is not set in this terminal." % cfg["key_env"])
-    body = json.dumps({"model": model, "temperature": 0.0, "max_tokens": MAX_TOKENS,
+    tok_param = "max_completion_tokens" if provider == "openai" else "max_tokens"
+    body = json.dumps({"model": model, "temperature": 0.0, tok_param: MAX_TOKENS,
                        "messages": [{"role": "user", "content": prompt}]}).encode("utf-8")
     last = None
     for attempt in range(tries):
         req = urllib.request.Request(cfg["url"], data=body, method="POST", headers={
-            "Content-Type": "application/json", "Authorization": "Bearer %s" % key})
+            "Content-Type": "application/json", "Authorization": "Bearer %s" % key,
+            "User-Agent": "AB1-Replay/2.1 (GovernRAG ablation)", "Accept": "application/json"})
         t0 = time.perf_counter()
         wait = min(60, 2 ** attempt) + 0.5
         try:
