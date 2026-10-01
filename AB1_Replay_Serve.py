@@ -114,6 +114,9 @@ def canon_without_deltas(rec, kind):
         c.pop("generated_answer", None)
         if isinstance(c.get("metadata"), dict):
             c["metadata"].pop("ablation", None)
+        if c.get("metadata") in ({}, None):
+            c.pop("metadata", None)   # creating metadata={} to hold the ablation
+                                      # annotation is part of the permitted delta
     else:
         if isinstance(c.get("naive"), dict):
             c["naive"].pop("answer", None)
