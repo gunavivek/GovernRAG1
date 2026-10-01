@@ -47,6 +47,32 @@ disclosed as post-hoc.
 - Budget: serve replay ≈$2–7/family · judging ≈$80–85/family · two families ≈$165 · add-on $5–10
   · cap $250 total. Billing captures BEFORE and AFTER each family (Table 6.1 pattern).
 
+## Model selection justification (added 2026-10-01 at Vivek's request — goes to deviation log + §8.6)
+Selection is CRITERIA-driven; exact model strings are pinned only at the LIVE PROBE (standing rule
+after the Google same-day withdrawals), with probe transcript + billing capture as evidence.
+Criteria:
+ C1. Distinct pretraining lineage from Google/Gemini (otherwise it is not a family test).
+ C2. Tier-matched to gemini-3.5-flash (flash/mini serving tier). A frontier model would confound
+     FAMILY with CAPABILITY; a weaker tier would confound it the other way.
+ C3. Deterministic decoding supported (T=0), context window >= max sealed prompt (~12k chars — trivial).
+ C4. Ecosystem coverage: one CLOSED-API family + one OPEN-WEIGHTS family. Open weights add a
+     permanent-reproducibility property no API family can offer (weights outlive the vendor).
+ C5. Pinnable dated snapshot (closed) or weights-pinned endpoint (open).
+ C6. Neither family may equal the JUDGE family (judge = Gemini). Both candidates are non-Gemini;
+     the residual Gemini-judge/Gemini-campaign asymmetry is exactly what the judge-agreement
+     add-on measures.
+Chosen (classes, pinned at probe):
+ Family 1 (closed API): OpenAI mini tier — GPT-5-mini / GPT-4.1-mini class. Largest non-Google
+     closed ecosystem; already present in the build provenance (GPT-4o at D3/D4), so the
+     dissertation's model inventory stays coherent.
+ Family 2 (open weights): Meta Llama class (3.3-70B / Llama-4 tier) via hosted inference
+     (Together or Groq — Vivek chooses provider at key time). Most widely adopted open family;
+     satisfies C4's reproducibility property.
+Alternatives considered: Anthropic Claude Haiku class (qualifies on C1–C3, C5; held as ALTERNATE
+if either probe fails); Qwen / Mistral open classes (qualify; Llama preferred on adoption breadth
+and provider determinism options). Rejected: any Gemini-lineage model (C1), any frontier-tier
+model (C2).
+
 ## Pre-stated decision rule (goes in the deviation log verbatim, before first token)
 Evidence is held identical, so criteria test governed-GENERATION behavior. Architecture is claimed
 resilient at the generation step iff, under each new family:
