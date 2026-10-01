@@ -299,3 +299,41 @@ fix a *measurement* bug, that is allowed and logged; a deviation to improve *res
   B. Gridhar, V. M. Manikandan". No results, data, metric definitions, or claims changed.
   Standing rule adopted: no reference enters the manuscript without its source document
   saved in 2_Prior_Art.
+
+- **2026-10-02 — CROSS-FAMILY GENERATION ABLATION PRE-STATED (approved; post-hoc study,
+  deviation-logged before execution).** Motivated by advisor feedback (is the design dependent
+  on the serve LLM?); closes §10.2's declared single-family limitation. Not pre-registered with
+  the original campaign; disclosed as post-hoc. DESIGN — Q6-only replay: the sealed per-corpus
+  serve prompts (`_spec_G1_Cited/G2_Grounded/G3_Strict/G4_Corrob.jsonl`, plus naive prompts
+  rebuilt from sealed context under the frozen B2 template, `naive_baseline()` line 144) are
+  replayed byte-identical at T=0 (max 2048 completion tokens) to two tier-matched families;
+  Q1–Q5 outputs are inherited from the sealed record, so admitted evidence is identical by
+  construction and every verdict difference is attributable to the generation model alone.
+  G2 axis variants excluded: they decompose substrate admission, which this design holds fixed.
+  Scope: full corpora (912/163/150) × 5 levels = 6,125 judged pairs per family. PINS (probed
+  live 2026-10-02; model-echo match; T=0 accepted): Family 1 `gpt-4.1-mini-2025-04-14`
+  (OpenAI; first choice gpt-5-mini REJECTED at probe — it refuses temperature 0, failing
+  criterion C3; documented in-family backup invoked). Family 2
+  `meta-llama/Llama-3.3-70B-Instruct-Turbo` (Together serverless; FP8 serving precision
+  DISCLOSED; Groq had decommissioned all Llama chat models, and Together's full-precision 70B
+  is dedicated-endpoint-only). Selection criteria C1–C6 and alternatives in
+  `03 Dissertation Defense/Ablation_CrossFamily_Runplan.md`. INSTRUMENT CONSTANT —
+  `E3_Parallel_Evaluation.py` runs unmodified with judge gemini-3.1-pro-preview and each
+  corpus's sealed `gold_map.json`; replay performed by `AB1_Replay_Serve.py` v2.1 (new
+  standalone file; overwrite/slot-owner guards; canonical identity check limiting output
+  deltas to `generated_answer`/`naive.answer` + ablation metadata); E3P's variant rows come
+  out structurally empty (zero judge calls) and are excluded from analysis. SLOT HYGIENE —
+  run-1 root slot relocated 2026-10-02 after per-file SHA-256 audit against sealed archives
+  (`results/_campaign_slot_run1_20261002/`, audit file retained). PRE-STATED DECISION RULE —
+  the architecture is claimed resilient at the generation step iff, under each family:
+  (a) coverage is non-increasing G0→G4 on each corpus; (b) the G1→G2 cliff appears on the
+  aligned corpus and the above-G1 collapse on HAGRID; (c) correct-refusal ordering is
+  preserved (governed ≫ naive on the unanswerable stratum); (d) resolvable-citation
+  auditability remains at ceiling. Accuracy LEVELS may shift (as with the judge succession);
+  STRUCTURE is the claim; either outcome is reported. Bootstrap: paired, B = 10,000,
+  seed 20261002. ADD-ON — judge-family sensitivity: ~500 sealed Gemini-era pairs (seeded
+  stratified selection, seed 20261002, script committed before execution) re-judged with
+  `gpt-4.1-mini-2025-04-14` as second judge; agreement reported as κ. EXECUTION — 20-record
+  pilot per family through the full replay→E3P path precedes any full run; archives
+  `results/ablation_<family>_<corpus>/` append-only with SHA-256 manifests; billing captured
+  before/after each family; budget cap $250.
