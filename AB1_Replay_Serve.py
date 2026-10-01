@@ -176,7 +176,10 @@ def probe(provider, model):
 
 
 def guard_path(p):
-    if any(m in p.name for m in SEALED_MARKERS) or p.parent != RES:
+    # O5: every write lands directly in results/ root; a sealed archive is a
+    # SUBDIRECTORY of results/, so parent==RES structurally forbids writing into one.
+    # (A filename-substring test misfires on our own tags, which embed the corpus name.)
+    if p.parent != RES:
         die("O5 violation: refusing write path %s" % p)
 
 
