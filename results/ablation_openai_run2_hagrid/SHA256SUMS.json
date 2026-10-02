@@ -1,0 +1,17 @@
+{
+  "_spec_G1_Cited.jsonl": "40cb1640f8c9c058be37b679adfbb3a6ec102ccf8d3497ca00e7bcea5dcb8088",
+  "_spec_G2_Grounded.jsonl": "eb8446019f439fe8e1f30bad58fdd3714ae226b42b7d7de1669c88c264747714",
+  "_spec_G3_Strict.jsonl": "684d511a4af613a2b40bee8ebb7a12d402ca79c8f494dce02d539b3af99ef188",
+  "_spec_G4_Corrob.jsonl": "684d511a4af613a2b40bee8ebb7a12d402ca79c8f494dce02d539b3af99ef188",
+  "_spec_G1_Cited_red.jsonl": "ffc7ec1dcb8babf2b32e3f5fa9dc618cd9cbf7e83c51e7b6be9e81c4452c22aa",
+  "_spec_G2_Grounded_red.jsonl": "bf9cd4317aadc4f8a142e2b1534ab30e6c55e8ec3ff0c33c7827049585e45153",
+  "_spec_G3_Strict_red.jsonl": "381dc911ad9c460470df417b5e1b0b65f44aae81868fb2638a5a1563ef4cfff6",
+  "_spec_G4_Corrob_red.jsonl": "bfcb595c2cdd5d4120bcf2a10021e5f1b668b9512a9e1ce686a92f16a6d6dc55",
+  "serve_results.jsonl": "723984aad36b6676ef8078eefee39a367c07bcc650934cd205f834914ce26278",
+  "ABL_slot_owner.json": "2a05a3256712e20ef12cb12ef2c58fb01d078bfc60c47d24623b2b2b04f8c741",
+  "ABL_openai_run2_hagrid_replay_ckpt.jsonl": "dc16abbc4465790e5fea5ac62957286dfb1b3f6016a17dbb9311716a11013f78",
+  "ABL_openai_run2_hagrid_replay_manifest.json": "5b3597ceae138eb0aa901869be64b61b0c0ac3beb96dd560231603f8df043c10",
+  "ABL_openai_run2_hagrid_checkpoint.jsonl": "f019fcc0e173bda007670b611241cf63f5e7a9e5cee9c0964198c14299591dce",
+  "ABL_openai_run2_hagrid_master_eval_log.csv": "8fec8f0119dc161bfd0ac2bd65d901a582f1b77af1e4bef24db5bc8a71004b44",
+  "ABL_openai_run2_hagrid_frontier_summary.csv": "ad3c0c7b78ec0eb74f63c39d169ace5fecce5bb968580a287d63a838f754817b"
+}

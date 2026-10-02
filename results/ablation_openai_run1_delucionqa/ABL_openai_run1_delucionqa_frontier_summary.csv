@@ -1,0 +1,10 @@
+config,coverage,accuracy_adherent,faithfulness,refusal_rate,correct_refusal_rate,false_rejection_rate,token_f1,governance_accuracy,constrained_f1,predicate_triplets_dropped,ontology_triplets_dropped,affinity_chunks_dropped,chunks_dropped_total,triplets_kept,primary_chunks_kept,gov_ratio
+G0_Naive,1.0000,0.8467,0.9408,0.0000,0.1562,0.0000,0.6550,0.7982,0.7266,nan,nan,nan,nan,nan,nan,0.0000
+G1_Cited,0.9529,0.8078,0.9194,0.0471,0.2188,0.0342,0.6056,0.7664,0.6860,0.0000,0.0000,0.0000,0.0000,6.4671,39.3015,0.0000
+G2_Grounded,0.5735,0.2017,0.8891,0.4265,0.6094,0.4127,0.4201,0.2303,0.3252,0.0055,0.0000,0.0000,35.9221,6.4616,3.3794,0.0000
+G3_Strict,0.5022,0.1722,0.8581,0.4978,0.6406,0.4870,0.4151,0.2050,0.3101,0.0055,0.0000,0.0000,35.9221,6.4616,3.3794,0.0000
+G4_Corrob,0.4660,0.1627,0.8659,0.5340,0.6562,0.5248,0.4094,0.1974,0.3034,0.0055,0.0000,0.0000,35.9221,6.4616,3.3794,0.0000
+G2+OntNU,0.0000,0.0000,0.0000,1.0000,1.0000,1.0000,0.0000,0.0702,0.0351,nan,nan,nan,nan,nan,nan,0.0000
+G2+OntConf,0.0000,0.0000,0.0000,1.0000,1.0000,1.0000,0.0000,0.0702,0.0351,nan,nan,nan,nan,nan,nan,0.0000
+G2+Aff,0.0000,0.0000,0.0000,1.0000,1.0000,1.0000,0.0000,0.0702,0.0351,nan,nan,nan,nan,nan,nan,0.0000
+G2+OntNU+Aff,0.0000,0.0000,0.0000,1.0000,1.0000,1.0000,0.0000,0.0702,0.0351,nan,nan,nan,nan,nan,nan,0.0000

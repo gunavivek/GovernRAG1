@@ -1,0 +1,31 @@
+{
+  "tag": "ABL_together_run3_expertqa",
+  "corpus": "run3_expertqa",
+  "provider": "together",
+  "model_pinned": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+  "temperature": 0.0,
+  "max_tokens": 2048,
+  "limit": null,
+  "naive_template_source": "B2_Serve.py naive_baseline() line 144 (frozen; reproduced verbatim)",
+  "sealed_inputs_sha256": {
+    "_spec_G1_Cited.jsonl": "92fbe0295a228f825db83eba3d8c60a03fe09f2af375262dea22a5e8d68ec6f5",
+    "_spec_G1_Cited_red.jsonl": "07b5550bec25ba550956f4ba92ec6228d916feaec9bf57740b86be60d4e5b67a",
+    "_spec_G2_Grounded.jsonl": "75e81447f2bff9ac7d4d9c895ccc65eb57479ef3c18ba39b793b9345eb120680",
+    "_spec_G2_Grounded_red.jsonl": "d6cc0288c774b57025aaaab9cf8d6d19902c6feee0007866aa5cb249ea774621",
+    "_spec_G3_Strict.jsonl": "14e09188c0424a5b1de7aa968811b5e6f96b5477c6c2920bd2d606724596756b",
+    "_spec_G3_Strict_red.jsonl": "35db44f2ab8bd31e0e65df124aa20b9eae83e23b050862386ed33ff28f82c62e",
+    "_spec_G4_Corrob.jsonl": "14e09188c0424a5b1de7aa968811b5e6f96b5477c6c2920bd2d606724596756b",
+    "_spec_G4_Corrob_red.jsonl": "24676415f6778ec88bcd123f6656abe06dcd024e14db8dad6529cd60446d58d0",
+    "serve_results.jsonl": "e6db64316a21b90bed3bcd9c4c04c1364e2b84e147b8f73f212683ea3700bb9e"
+  },
+  "records": {
+    "serve": 150,
+    "G1_Cited": 150,
+    "G2_Grounded": 150,
+    "G3_Strict": 150,
+    "G4_Corrob": 150
+  },
+  "calls_this_session": 390,
+  "started_utc": "2026-10-02T11:28:01Z",
+  "finished_utc": "2026-10-02T11:50:24Z"
+}

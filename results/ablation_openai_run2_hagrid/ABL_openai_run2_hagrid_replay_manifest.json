@@ -1,0 +1,31 @@
+{
+  "tag": "ABL_openai_run2_hagrid",
+  "corpus": "run2_hagrid",
+  "provider": "openai",
+  "model_pinned": "gpt-4.1-mini-2025-04-14",
+  "temperature": 0.0,
+  "max_tokens": 2048,
+  "limit": null,
+  "naive_template_source": "B2_Serve.py naive_baseline() line 144 (frozen; reproduced verbatim)",
+  "sealed_inputs_sha256": {
+    "_spec_G1_Cited.jsonl": "74289e23bc7bdb4b3edec5a14cc1bad3eeeec2aa751c59c86e2397e199a19749",
+    "_spec_G1_Cited_red.jsonl": "ffc7ec1dcb8babf2b32e3f5fa9dc618cd9cbf7e83c51e7b6be9e81c4452c22aa",
+    "_spec_G2_Grounded.jsonl": "214050a0a67e4f2ee6a84c8dbdd847b3e7693295b3071d7cab93b94c525b5308",
+    "_spec_G2_Grounded_red.jsonl": "bf9cd4317aadc4f8a142e2b1534ab30e6c55e8ec3ff0c33c7827049585e45153",
+    "_spec_G3_Strict.jsonl": "40153e86b11a75b5fc831eff33dda109376af6aabb2d9e25c631d22a6b1419a8",
+    "_spec_G3_Strict_red.jsonl": "381dc911ad9c460470df417b5e1b0b65f44aae81868fb2638a5a1563ef4cfff6",
+    "_spec_G4_Corrob.jsonl": "40153e86b11a75b5fc831eff33dda109376af6aabb2d9e25c631d22a6b1419a8",
+    "_spec_G4_Corrob_red.jsonl": "bfcb595c2cdd5d4120bcf2a10021e5f1b668b9512a9e1ce686a92f16a6d6dc55",
+    "serve_results.jsonl": "4a50dfb2516a8a6699473436af07720f7ce3e630e16af652b646adb9f4360af3"
+  },
+  "records": {
+    "serve": 163,
+    "G1_Cited": 163,
+    "G2_Grounded": 163,
+    "G3_Strict": 163,
+    "G4_Corrob": 163
+  },
+  "calls_this_session": 359,
+  "started_utc": "2026-10-02T01:32:04Z",
+  "finished_utc": "2026-10-02T01:37:23Z"
+}

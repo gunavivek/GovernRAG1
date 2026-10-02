@@ -1,0 +1,17 @@
+{
+  "_spec_G1_Cited.jsonl": "81866a2f58fe3adce20f2563d57fc98c25ba9c51d065e9059d62d86daa798fc2",
+  "_spec_G2_Grounded.jsonl": "6948d860b611aece6324727f7de426132f0b58433626450f23c3995f5affab1a",
+  "_spec_G3_Strict.jsonl": "412c26336bec860d9c04d97e8bfc69ff1dc5434c5077767a635f70a33a948295",
+  "_spec_G4_Corrob.jsonl": "412c26336bec860d9c04d97e8bfc69ff1dc5434c5077767a635f70a33a948295",
+  "_spec_G1_Cited_red.jsonl": "ffc7ec1dcb8babf2b32e3f5fa9dc618cd9cbf7e83c51e7b6be9e81c4452c22aa",
+  "_spec_G2_Grounded_red.jsonl": "bf9cd4317aadc4f8a142e2b1534ab30e6c55e8ec3ff0c33c7827049585e45153",
+  "_spec_G3_Strict_red.jsonl": "381dc911ad9c460470df417b5e1b0b65f44aae81868fb2638a5a1563ef4cfff6",
+  "_spec_G4_Corrob_red.jsonl": "bfcb595c2cdd5d4120bcf2a10021e5f1b668b9512a9e1ce686a92f16a6d6dc55",
+  "serve_results.jsonl": "79581521349bd502bd2c54fb9d5f7205a986edaf5a919e6e03fab225897cb644",
+  "ABL_slot_owner.json": "0bc0d2e0e3368d6779eeb43e726c5cee6abe32bede34b70bce0e86ba4333a254",
+  "ABL_together_run2_hagrid_replay_ckpt.jsonl": "148faecca125ac48143101faa823231d01bb399c02e7358e388078ecbf89f50f",
+  "ABL_together_run2_hagrid_replay_manifest.json": "8f257913c18b185121ec026b1f596ca066ce859c397b61c377bfc3e142f58229",
+  "ABL_together_run2_hagrid_checkpoint.jsonl": "75c61f97933b9079a3e48c501098352a44bc34a91e0fc1e3d270cddfc9e47828",
+  "ABL_together_run2_hagrid_master_eval_log.csv": "f374982564e8ab5a7b01d17a31713bcbc07839a88a4bc67deca0ef92b4a92167",
+  "ABL_together_run2_hagrid_frontier_summary.csv": "9fb590bffb7ce428433fbc85acf2ac71e3d5eccfafd5fdc854843ba204f2aa1c"
+}

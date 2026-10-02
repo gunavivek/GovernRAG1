@@ -1,0 +1,17 @@
+{
+  "_spec_G1_Cited.jsonl": "a1a732244445cfeb2d2c44b6e077e408eb328b6613ec87dfacc4f08035dded9e",
+  "_spec_G2_Grounded.jsonl": "6f1d9063068fbfbc67ce3a49696aa7dfae9de89aa8d8401a798d8d460c1f4a57",
+  "_spec_G3_Strict.jsonl": "81469d0d149c9f70652667bfc3f90c87412837e1e4a9705994df357b71b60f3f",
+  "_spec_G4_Corrob.jsonl": "452fe08b36d8815a8f68d9c27f2c0bd0dcb4a870a40a1924c42667a8de5ae878",
+  "_spec_G1_Cited_red.jsonl": "2b978fb215dac4af2e5a6fe9b0faaabae86354d131324fab61178c0a482187ab",
+  "_spec_G2_Grounded_red.jsonl": "e5f3a367e8d504858d3ed518c0151bcf2af4d4d076febd1428131778231fc018",
+  "_spec_G3_Strict_red.jsonl": "705d0f96dfb4aa1bb8f423bbe13ce0f3df2765e6dcba502143d52241d986046d",
+  "_spec_G4_Corrob_red.jsonl": "a98c835d3eab86faeb93ace0e3b896b1b325e9125865ac9fd30b84531ec48deb",
+  "serve_results.jsonl": "a2ecd5b60c88df25cbbc7348098277acd2826301b27e87070512394edc7b0155",
+  "ABL_slot_owner.json": "5460007b48ae92e05b17ccf62876cde6a658551bec8eaab7c948e2638b46a044",
+  "ABL_openai_run1_delucionqa_replay_ckpt.jsonl": "09d3dd954326299ea331cb1c1bacd5fb0041dc674ac6be3320f235fd14d8ce43",
+  "ABL_openai_run1_delucionqa_replay_manifest.json": "1e714b5b5ada1fa51ee14538f7ecad0436d6c95f46f70e1d72ac5f90ee5b593c",
+  "ABL_openai_run1_delucionqa_checkpoint.jsonl": "b25727385c636a7484d5cef6e5bebe820b1c66b85f3e4d907f005508c7a1f0b7",
+  "ABL_openai_run1_delucionqa_master_eval_log.csv": "b9485cefbadcfb0e2b2bfb4de0d9c298e76afa9c17bcb186fde11a2a2e63f35c",
+  "ABL_openai_run1_delucionqa_frontier_summary.csv": "81523c902db6903714bffa9a56ca86d4522b4c7d289634d2ab213ebf1331ba5d"
+}
