@@ -1,0 +1,1209 @@
+{
+  "seed": 20261002,
+  "B": 10000,
+  "inputs_sha256": {
+    "gemini|run1_delucionqa": "7d66bd0c2d21e7b42ad0a15577439cebcd3c94a42d5521aba1f931bce65439dd",
+    "gemini|run2_hagrid": "6155c2c9dae96fa25b745cd14bc501adb59b4dffa7cbfbf7fdeb0bbbc4adda38",
+    "gemini|run3_expertqa": "6876014565773e9975d4d6b429546a0c310199a91909a22091913589a561b11e",
+    "openai|run1_delucionqa": "b25727385c636a7484d5cef6e5bebe820b1c66b85f3e4d907f005508c7a1f0b7",
+    "openai|run2_hagrid": "f019fcc0e173bda007670b611241cf63f5e7a9e5cee9c0964198c14299591dce",
+    "openai|run3_expertqa": "1dbbc773c193e0612861c0c23d7d71dbd57698c74021dc0f40ac2194df85eee9",
+    "llama|run1_delucionqa": "a1ef1e4324927e168dc876312db7d14efbc122e7cbc216c9854a41e7a59f089f",
+    "llama|run2_hagrid": "75c61f97933b9079a3e48c501098352a44bc34a91e0fc1e3d270cddfc9e47828",
+    "llama|run3_expertqa": "40de4805d34702f4b04bd02eee53f04ac26d3cc943cb96286a9bc906cede0635"
+  },
+  "families": {
+    "gemini": {
+      "run1_delucionqa": {
+        "n": 912,
+        "coverage": [
+          1.0,
+          0.9254,
+          0.4408,
+          0.3805,
+          0.3476
+        ],
+        "coverage_deltas": [
+          {
+            "step": "G0_Naive->G1_Cited",
+            "delta": -0.0746,
+            "ci95": [
+              -0.0921,
+              -0.057
+            ]
+          },
+          {
+            "step": "G1_Cited->G2_Grounded",
+            "delta": -0.4846,
+            "ci95": [
+              -0.5164,
+              -0.4529
+            ]
+          },
+          {
+            "step": "G2_Grounded->G3_Strict",
+            "delta": -0.0603,
+            "ci95": [
+              -0.0779,
+              -0.0428
+            ]
+          },
+          {
+            "step": "G3_Strict->G4_Corrob",
+            "delta": -0.0329,
+            "ci95": [
+              -0.0471,
+              -0.0186
+            ]
+          }
+        ],
+        "monotone_nonincreasing": true,
+        "n_unanswerable": 64,
+        "correct_refusal_unanswerable": {
+          "G0_Naive": {
+            "rate": 0.4062,
+            "ci95": [
+              0.2812,
+              0.5312
+            ]
+          },
+          "G1_Cited": {
+            "rate": 0.4219,
+            "ci95": [
+              0.2969,
+              0.5469
+            ]
+          },
+          "G2_Grounded": {
+            "rate": 0.7812,
+            "ci95": [
+              0.6719,
+              0.875
+            ]
+          },
+          "G3_Strict": {
+            "rate": 0.7812,
+            "ci95": [
+              0.6719,
+              0.875
+            ]
+          },
+          "G4_Corrob": {
+            "rate": 0.8281,
+            "ci95": [
+              0.7344,
+              0.9219
+            ]
+          }
+        },
+        "correct_refusal_delta_vs_naive": {
+          "G1_Cited": {
+            "delta_vs_naive": 0.0156,
+            "ci95": [
+              -0.0625,
+              0.0938
+            ]
+          },
+          "G2_Grounded": {
+            "delta_vs_naive": 0.375,
+            "ci95": [
+              0.25,
+              0.5
+            ]
+          },
+          "G3_Strict": {
+            "delta_vs_naive": 0.375,
+            "ci95": [
+              0.25,
+              0.5
+            ]
+          },
+          "G4_Corrob": {
+            "delta_vs_naive": 0.4219,
+            "ci95": [
+              0.2969,
+              0.5469
+            ]
+          }
+        },
+        "auditability": {
+          "records_with_citations": 1660,
+          "distinct_citations": 3726,
+          "resolved": 3714,
+          "resolvability": 0.9968
+        }
+      },
+      "run2_hagrid": {
+        "n": 163,
+        "coverage": [
+          1.0,
+          0.7791,
+          0.1656,
+          0.0,
+          0.0
+        ],
+        "coverage_deltas": [
+          {
+            "step": "G0_Naive->G1_Cited",
+            "delta": -0.2209,
+            "ci95": [
+              -0.2822,
+              -0.1595
+            ]
+          },
+          {
+            "step": "G1_Cited->G2_Grounded",
+            "delta": -0.6135,
+            "ci95": [
+              -0.6871,
+              -0.5397
+            ]
+          },
+          {
+            "step": "G2_Grounded->G3_Strict",
+            "delta": -0.1656,
+            "ci95": [
+              -0.227,
+              -0.1104
+            ]
+          },
+          {
+            "step": "G3_Strict->G4_Corrob",
+            "delta": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "monotone_nonincreasing": true,
+        "n_unanswerable": 26,
+        "correct_refusal_unanswerable": {
+          "G0_Naive": {
+            "rate": 0.4231,
+            "ci95": [
+              0.2308,
+              0.6154
+            ]
+          },
+          "G1_Cited": {
+            "rate": 0.4615,
+            "ci95": [
+              0.2692,
+              0.6538
+            ]
+          },
+          "G2_Grounded": {
+            "rate": 0.7692,
+            "ci95": [
+              0.6154,
+              0.9231
+            ]
+          },
+          "G3_Strict": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "G4_Corrob": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "correct_refusal_delta_vs_naive": {
+          "G1_Cited": {
+            "delta_vs_naive": 0.0385,
+            "ci95": [
+              -0.0769,
+              0.1538
+            ]
+          },
+          "G2_Grounded": {
+            "delta_vs_naive": 0.3462,
+            "ci95": [
+              0.1538,
+              0.5385
+            ]
+          },
+          "G3_Strict": {
+            "delta_vs_naive": 0.5769,
+            "ci95": [
+              0.3846,
+              0.7692
+            ]
+          },
+          "G4_Corrob": {
+            "delta_vs_naive": 0.5769,
+            "ci95": [
+              0.3846,
+              0.7692
+            ]
+          }
+        },
+        "auditability": {
+          "records_with_citations": 153,
+          "distinct_citations": 281,
+          "resolved": 281,
+          "resolvability": 1.0
+        }
+      },
+      "run3_expertqa": {
+        "n": 150,
+        "coverage": [
+          1.0,
+          0.5867,
+          0.3267,
+          0.0,
+          0.0
+        ],
+        "coverage_deltas": [
+          {
+            "step": "G0_Naive->G1_Cited",
+            "delta": -0.4133,
+            "ci95": [
+              -0.4933,
+              -0.3333
+            ]
+          },
+          {
+            "step": "G1_Cited->G2_Grounded",
+            "delta": -0.26,
+            "ci95": [
+              -0.34,
+              -0.1867
+            ]
+          },
+          {
+            "step": "G2_Grounded->G3_Strict",
+            "delta": -0.3267,
+            "ci95": [
+              -0.4,
+              -0.2533
+            ]
+          },
+          {
+            "step": "G3_Strict->G4_Corrob",
+            "delta": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "monotone_nonincreasing": true,
+        "n_unanswerable": 105,
+        "correct_refusal_unanswerable": {
+          "G0_Naive": {
+            "rate": 0.4381,
+            "ci95": [
+              0.3429,
+              0.5333
+            ]
+          },
+          "G1_Cited": {
+            "rate": 0.5048,
+            "ci95": [
+              0.4095,
+              0.6
+            ]
+          },
+          "G2_Grounded": {
+            "rate": 0.7524,
+            "ci95": [
+              0.6667,
+              0.8286
+            ]
+          },
+          "G3_Strict": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "G4_Corrob": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "correct_refusal_delta_vs_naive": {
+          "G1_Cited": {
+            "delta_vs_naive": 0.0667,
+            "ci95": [
+              -0.0095,
+              0.1429
+            ]
+          },
+          "G2_Grounded": {
+            "delta_vs_naive": 0.3143,
+            "ci95": [
+              0.219,
+              0.4095
+            ]
+          },
+          "G3_Strict": {
+            "delta_vs_naive": 0.5619,
+            "ci95": [
+              0.4667,
+              0.6571
+            ]
+          },
+          "G4_Corrob": {
+            "delta_vs_naive": 0.5619,
+            "ci95": [
+              0.4667,
+              0.6571
+            ]
+          }
+        },
+        "auditability": {
+          "records_with_citations": 136,
+          "distinct_citations": 278,
+          "resolved": 278,
+          "resolvability": 1.0
+        }
+      }
+    },
+    "openai": {
+      "run1_delucionqa": {
+        "n": 912,
+        "coverage": [
+          1.0,
+          0.9529,
+          0.5735,
+          0.5022,
+          0.466
+        ],
+        "coverage_deltas": [
+          {
+            "step": "G0_Naive->G1_Cited",
+            "delta": -0.0471,
+            "ci95": [
+              -0.0614,
+              -0.034
+            ]
+          },
+          {
+            "step": "G1_Cited->G2_Grounded",
+            "delta": -0.3794,
+            "ci95": [
+              -0.4123,
+              -0.3476
+            ]
+          },
+          {
+            "step": "G2_Grounded->G3_Strict",
+            "delta": -0.0713,
+            "ci95": [
+              -0.0888,
+              -0.0548
+            ]
+          },
+          {
+            "step": "G3_Strict->G4_Corrob",
+            "delta": -0.0362,
+            "ci95": [
+              -0.0515,
+              -0.0219
+            ]
+          }
+        ],
+        "monotone_nonincreasing": true,
+        "n_unanswerable": 64,
+        "correct_refusal_unanswerable": {
+          "G0_Naive": {
+            "rate": 0.1562,
+            "ci95": [
+              0.0781,
+              0.25
+            ]
+          },
+          "G1_Cited": {
+            "rate": 0.2188,
+            "ci95": [
+              0.125,
+              0.3281
+            ]
+          },
+          "G2_Grounded": {
+            "rate": 0.6094,
+            "ci95": [
+              0.4844,
+              0.7344
+            ]
+          },
+          "G3_Strict": {
+            "rate": 0.6406,
+            "ci95": [
+              0.5156,
+              0.75
+            ]
+          },
+          "G4_Corrob": {
+            "rate": 0.6562,
+            "ci95": [
+              0.5312,
+              0.7656
+            ]
+          }
+        },
+        "correct_refusal_delta_vs_naive": {
+          "G1_Cited": {
+            "delta_vs_naive": 0.0625,
+            "ci95": [
+              -0.0469,
+              0.1719
+            ]
+          },
+          "G2_Grounded": {
+            "delta_vs_naive": 0.4531,
+            "ci95": [
+              0.3125,
+              0.5938
+            ]
+          },
+          "G3_Strict": {
+            "delta_vs_naive": 0.4844,
+            "ci95": [
+              0.3438,
+              0.625
+            ]
+          },
+          "G4_Corrob": {
+            "delta_vs_naive": 0.5,
+            "ci95": [
+              0.375,
+              0.625
+            ]
+          }
+        },
+        "auditability": {
+          "records_with_citations": 1499,
+          "distinct_citations": 2371,
+          "resolved": 2055,
+          "resolvability": 0.8667
+        }
+      },
+      "run2_hagrid": {
+        "n": 163,
+        "coverage": [
+          1.0,
+          0.8221,
+          0.1595,
+          0.0,
+          0.0
+        ],
+        "coverage_deltas": [
+          {
+            "step": "G0_Naive->G1_Cited",
+            "delta": -0.1779,
+            "ci95": [
+              -0.2393,
+              -0.1227
+            ]
+          },
+          {
+            "step": "G1_Cited->G2_Grounded",
+            "delta": -0.6626,
+            "ci95": [
+              -0.7362,
+              -0.589
+            ]
+          },
+          {
+            "step": "G2_Grounded->G3_Strict",
+            "delta": -0.1595,
+            "ci95": [
+              -0.2209,
+              -0.1043
+            ]
+          },
+          {
+            "step": "G3_Strict->G4_Corrob",
+            "delta": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "monotone_nonincreasing": true,
+        "n_unanswerable": 26,
+        "correct_refusal_unanswerable": {
+          "G0_Naive": {
+            "rate": 0.3077,
+            "ci95": [
+              0.1538,
+              0.5
+            ]
+          },
+          "G1_Cited": {
+            "rate": 0.3077,
+            "ci95": [
+              0.1538,
+              0.5
+            ]
+          },
+          "G2_Grounded": {
+            "rate": 0.7692,
+            "ci95": [
+              0.6154,
+              0.9231
+            ]
+          },
+          "G3_Strict": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "G4_Corrob": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "correct_refusal_delta_vs_naive": {
+          "G1_Cited": {
+            "delta_vs_naive": 0.0,
+            "ci95": [
+              -0.1923,
+              0.1923
+            ]
+          },
+          "G2_Grounded": {
+            "delta_vs_naive": 0.4615,
+            "ci95": [
+              0.2692,
+              0.6538
+            ]
+          },
+          "G3_Strict": {
+            "delta_vs_naive": 0.6923,
+            "ci95": [
+              0.5,
+              0.8462
+            ]
+          },
+          "G4_Corrob": {
+            "delta_vs_naive": 0.6923,
+            "ci95": [
+              0.5,
+              0.8462
+            ]
+          }
+        },
+        "auditability": {
+          "records_with_citations": 161,
+          "distinct_citations": 166,
+          "resolved": 166,
+          "resolvability": 1.0
+        }
+      },
+      "run3_expertqa": {
+        "n": 150,
+        "coverage": [
+          1.0,
+          0.74,
+          0.42,
+          0.0,
+          0.0
+        ],
+        "coverage_deltas": [
+          {
+            "step": "G0_Naive->G1_Cited",
+            "delta": -0.26,
+            "ci95": [
+              -0.3333,
+              -0.1933
+            ]
+          },
+          {
+            "step": "G1_Cited->G2_Grounded",
+            "delta": -0.32,
+            "ci95": [
+              -0.4,
+              -0.24
+            ]
+          },
+          {
+            "step": "G2_Grounded->G3_Strict",
+            "delta": -0.42,
+            "ci95": [
+              -0.5,
+              -0.34
+            ]
+          },
+          {
+            "step": "G3_Strict->G4_Corrob",
+            "delta": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "monotone_nonincreasing": true,
+        "n_unanswerable": 105,
+        "correct_refusal_unanswerable": {
+          "G0_Naive": {
+            "rate": 0.1905,
+            "ci95": [
+              0.1143,
+              0.2667
+            ]
+          },
+          "G1_Cited": {
+            "rate": 0.3333,
+            "ci95": [
+              0.2476,
+              0.419
+            ]
+          },
+          "G2_Grounded": {
+            "rate": 0.6667,
+            "ci95": [
+              0.5714,
+              0.7524
+            ]
+          },
+          "G3_Strict": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "G4_Corrob": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "correct_refusal_delta_vs_naive": {
+          "G1_Cited": {
+            "delta_vs_naive": 0.1429,
+            "ci95": [
+              0.0762,
+              0.219
+            ]
+          },
+          "G2_Grounded": {
+            "delta_vs_naive": 0.4762,
+            "ci95": [
+              0.381,
+              0.581
+            ]
+          },
+          "G3_Strict": {
+            "delta_vs_naive": 0.8095,
+            "ci95": [
+              0.7333,
+              0.8857
+            ]
+          },
+          "G4_Corrob": {
+            "delta_vs_naive": 0.8095,
+            "ci95": [
+              0.7333,
+              0.8762
+            ]
+          }
+        },
+        "auditability": {
+          "records_with_citations": 155,
+          "distinct_citations": 222,
+          "resolved": 218,
+          "resolvability": 0.982
+        }
+      }
+    },
+    "llama": {
+      "run1_delucionqa": {
+        "n": 912,
+        "coverage": [
+          1.0,
+          0.9561,
+          0.5493,
+          0.4726,
+          0.443
+        ],
+        "coverage_deltas": [
+          {
+            "step": "G0_Naive->G1_Cited",
+            "delta": -0.0439,
+            "ci95": [
+              -0.0581,
+              -0.0307
+            ]
+          },
+          {
+            "step": "G1_Cited->G2_Grounded",
+            "delta": -0.4068,
+            "ci95": [
+              -0.4397,
+              -0.375
+            ]
+          },
+          {
+            "step": "G2_Grounded->G3_Strict",
+            "delta": -0.0768,
+            "ci95": [
+              -0.0998,
+              -0.0537
+            ]
+          },
+          {
+            "step": "G3_Strict->G4_Corrob",
+            "delta": -0.0296,
+            "ci95": [
+              -0.0471,
+              -0.0121
+            ]
+          }
+        ],
+        "monotone_nonincreasing": true,
+        "n_unanswerable": 64,
+        "correct_refusal_unanswerable": {
+          "G0_Naive": {
+            "rate": 0.3594,
+            "ci95": [
+              0.25,
+              0.4844
+            ]
+          },
+          "G1_Cited": {
+            "rate": 0.2344,
+            "ci95": [
+              0.1406,
+              0.3438
+            ]
+          },
+          "G2_Grounded": {
+            "rate": 0.6562,
+            "ci95": [
+              0.5312,
+              0.7656
+            ]
+          },
+          "G3_Strict": {
+            "rate": 0.6562,
+            "ci95": [
+              0.5312,
+              0.7656
+            ]
+          },
+          "G4_Corrob": {
+            "rate": 0.6875,
+            "ci95": [
+              0.5625,
+              0.7969
+            ]
+          }
+        },
+        "correct_refusal_delta_vs_naive": {
+          "G1_Cited": {
+            "delta_vs_naive": -0.125,
+            "ci95": [
+              -0.2344,
+              -0.0156
+            ]
+          },
+          "G2_Grounded": {
+            "delta_vs_naive": 0.2969,
+            "ci95": [
+              0.1719,
+              0.4375
+            ]
+          },
+          "G3_Strict": {
+            "delta_vs_naive": 0.2969,
+            "ci95": [
+              0.1719,
+              0.4375
+            ]
+          },
+          "G4_Corrob": {
+            "delta_vs_naive": 0.3281,
+            "ci95": [
+              0.2031,
+              0.4531
+            ]
+          }
+        },
+        "auditability": {
+          "records_with_citations": 2537,
+          "distinct_citations": 5070,
+          "resolved": 5070,
+          "resolvability": 1.0
+        }
+      },
+      "run2_hagrid": {
+        "n": 163,
+        "coverage": [
+          1.0,
+          0.8282,
+          0.1718,
+          0.0,
+          0.0
+        ],
+        "coverage_deltas": [
+          {
+            "step": "G0_Naive->G1_Cited",
+            "delta": -0.1718,
+            "ci95": [
+              -0.2331,
+              -0.1166
+            ]
+          },
+          {
+            "step": "G1_Cited->G2_Grounded",
+            "delta": -0.6564,
+            "ci95": [
+              -0.7301,
+              -0.5767
+            ]
+          },
+          {
+            "step": "G2_Grounded->G3_Strict",
+            "delta": -0.1718,
+            "ci95": [
+              -0.2331,
+              -0.1166
+            ]
+          },
+          {
+            "step": "G3_Strict->G4_Corrob",
+            "delta": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "monotone_nonincreasing": true,
+        "n_unanswerable": 26,
+        "correct_refusal_unanswerable": {
+          "G0_Naive": {
+            "rate": 0.3462,
+            "ci95": [
+              0.1923,
+              0.5385
+            ]
+          },
+          "G1_Cited": {
+            "rate": 0.2692,
+            "ci95": [
+              0.1154,
+              0.4615
+            ]
+          },
+          "G2_Grounded": {
+            "rate": 0.7308,
+            "ci95": [
+              0.5385,
+              0.8846
+            ]
+          },
+          "G3_Strict": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "G4_Corrob": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "correct_refusal_delta_vs_naive": {
+          "G1_Cited": {
+            "delta_vs_naive": -0.0769,
+            "ci95": [
+              -0.2692,
+              0.1154
+            ]
+          },
+          "G2_Grounded": {
+            "delta_vs_naive": 0.3846,
+            "ci95": [
+              0.1538,
+              0.6154
+            ]
+          },
+          "G3_Strict": {
+            "delta_vs_naive": 0.6538,
+            "ci95": [
+              0.4615,
+              0.8462
+            ]
+          },
+          "G4_Corrob": {
+            "delta_vs_naive": 0.6538,
+            "ci95": [
+              0.4615,
+              0.8462
+            ]
+          }
+        },
+        "auditability": {
+          "records_with_citations": 192,
+          "distinct_citations": 253,
+          "resolved": 253,
+          "resolvability": 1.0
+        }
+      },
+      "run3_expertqa": {
+        "n": 150,
+        "coverage": [
+          1.0,
+          0.7933,
+          0.4267,
+          0.0,
+          0.0
+        ],
+        "coverage_deltas": [
+          {
+            "step": "G0_Naive->G1_Cited",
+            "delta": -0.2067,
+            "ci95": [
+              -0.2733,
+              -0.1467
+            ]
+          },
+          {
+            "step": "G1_Cited->G2_Grounded",
+            "delta": -0.3667,
+            "ci95": [
+              -0.4467,
+              -0.2867
+            ]
+          },
+          {
+            "step": "G2_Grounded->G3_Strict",
+            "delta": -0.4267,
+            "ci95": [
+              -0.5067,
+              -0.3467
+            ]
+          },
+          {
+            "step": "G3_Strict->G4_Corrob",
+            "delta": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "monotone_nonincreasing": true,
+        "n_unanswerable": 105,
+        "correct_refusal_unanswerable": {
+          "G0_Naive": {
+            "rate": 0.2857,
+            "ci95": [
+              0.2,
+              0.3714
+            ]
+          },
+          "G1_Cited": {
+            "rate": 0.2857,
+            "ci95": [
+              0.2,
+              0.3714
+            ]
+          },
+          "G2_Grounded": {
+            "rate": 0.6762,
+            "ci95": [
+              0.581,
+              0.7619
+            ]
+          },
+          "G3_Strict": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "G4_Corrob": {
+            "rate": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "correct_refusal_delta_vs_naive": {
+          "G1_Cited": {
+            "delta_vs_naive": 0.0,
+            "ci95": [
+              -0.0667,
+              0.0667
+            ]
+          },
+          "G2_Grounded": {
+            "delta_vs_naive": 0.3905,
+            "ci95": [
+              0.2762,
+              0.5048
+            ]
+          },
+          "G3_Strict": {
+            "delta_vs_naive": 0.7143,
+            "ci95": [
+              0.6286,
+              0.8
+            ]
+          },
+          "G4_Corrob": {
+            "delta_vs_naive": 0.7143,
+            "ci95": [
+              0.6286,
+              0.8
+            ]
+          }
+        },
+        "auditability": {
+          "records_with_citations": 233,
+          "distinct_citations": 424,
+          "resolved": 424,
+          "resolvability": 1.0
+        }
+      }
+    }
+  },
+  "generated_utc": "2026-10-02T21:25:05Z",
+  "criteria_verdicts": {
+    "openai": {
+      "a_monotonicity": true,
+      "b_cliff_delu_and_hagrid_collapse": true,
+      "b_detail": {
+        "delu_G1G2": {
+          "step": "G1_Cited->G2_Grounded",
+          "delta": -0.3794,
+          "ci95": [
+            -0.4123,
+            -0.3476
+          ]
+        },
+        "hagrid_cov": [
+          1.0,
+          0.8221,
+          0.1595,
+          0.0,
+          0.0
+        ]
+      },
+      "c_governed_refusal_over_naive_G2plus": true,
+      "c_detail": {
+        "run1_delucionqa": {
+          "g2plus_all_above_naive_ci_excl_0": true,
+          "g1_delta": {
+            "delta_vs_naive": 0.0625,
+            "ci95": [
+              -0.0469,
+              0.1719
+            ]
+          }
+        },
+        "run2_hagrid": {
+          "g2plus_all_above_naive_ci_excl_0": true,
+          "g1_delta": {
+            "delta_vs_naive": 0.0,
+            "ci95": [
+              -0.1923,
+              0.1923
+            ]
+          }
+        },
+        "run3_expertqa": {
+          "g2plus_all_above_naive_ci_excl_0": true,
+          "g1_delta": {
+            "delta_vs_naive": 0.1429,
+            "ci95": [
+              0.0762,
+              0.219
+            ]
+          }
+        }
+      },
+      "d_auditability_min": 0.8667,
+      "d_at_ceiling": false
+    },
+    "llama": {
+      "a_monotonicity": true,
+      "b_cliff_delu_and_hagrid_collapse": true,
+      "b_detail": {
+        "delu_G1G2": {
+          "step": "G1_Cited->G2_Grounded",
+          "delta": -0.4068,
+          "ci95": [
+            -0.4397,
+            -0.375
+          ]
+        },
+        "hagrid_cov": [
+          1.0,
+          0.8282,
+          0.1718,
+          0.0,
+          0.0
+        ]
+      },
+      "c_governed_refusal_over_naive_G2plus": true,
+      "c_detail": {
+        "run1_delucionqa": {
+          "g2plus_all_above_naive_ci_excl_0": true,
+          "g1_delta": {
+            "delta_vs_naive": -0.125,
+            "ci95": [
+              -0.2344,
+              -0.0156
+            ]
+          }
+        },
+        "run2_hagrid": {
+          "g2plus_all_above_naive_ci_excl_0": true,
+          "g1_delta": {
+            "delta_vs_naive": -0.0769,
+            "ci95": [
+              -0.2692,
+              0.1154
+            ]
+          }
+        },
+        "run3_expertqa": {
+          "g2plus_all_above_naive_ci_excl_0": true,
+          "g1_delta": {
+            "delta_vs_naive": 0.0,
+            "ci95": [
+              -0.0667,
+              0.0667
+            ]
+          }
+        }
+      },
+      "d_auditability_min": 1.0,
+      "d_at_ceiling": true
+    }
+  }
+}
