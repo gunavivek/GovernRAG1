@@ -197,6 +197,17 @@ PER JOB (6 jobs = corpus c in {run1_delucionqa, run2_hagrid, run3_expertqa} x fa
 ANALYSIS (after all seals): criteria (a)-(d) per family vs campaign frontier; bootstrap B=10,000
 (new seed from deviation entry); family performance/cost table; add-on kappa.
 
+## Expense capture (added 2026-10-02, Vivek's instruction)
+After job 6 (and finally after job 7): capture ALL provider billing evidence into
+results/ablation_billing/ — (1) Gemini: Google Cloud Billing -> Cost table -> custom range
+Oct 1 -> day after last job, Service = Gemini API, group by SKU, Download CSV (allow for
+billing lag: capture the day AFTER the last judging run); (2) Together export (Family-2
+boundary); (3) refreshed OpenAI export if changed. Each filed with SHA-256 + capture note;
+reconciliation token-exact for OpenAI/Together (adapter logs per-call usage), date-window +
+pair-count for Gemini (frozen E3P logs verdicts, not judge tokens — disclosed asymmetry).
+Family-1 capture DONE 2026-10-02: OpenAI $3.14, reconciled exact (4,624 req / 6,558,131 in /
+395,102 out). Gemini mid-study marker: $70.34 Oct 1–2. Projection ~$110–125 vs $250 cap.
+
 ## Next session start checklist
 [ ] Verify 15 spec files + hashes  [ ] Vivek provides OpenAI key + hosted-Llama provider key
     (e.g., Together/Groq — his choice)
