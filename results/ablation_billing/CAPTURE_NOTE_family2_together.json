@@ -1,0 +1,36 @@
+{
+  "capture": "Together Family 2 (meta-llama/Llama-3.3-70B-Instruct-Turbo) billing evidence \u2014 Current Billing Period panel",
+  "date_captured": "2026-10-02",
+  "files": {
+    "together_family2_billing_period_2026-10-02.png": "2cbe89dd3c6be3cfcadebf3c79db1ac0d3b428142bef377e05e6b294ec4d1de8"
+  },
+  "ledger": {
+    "input_units_M": [
+      4.808,
+      1.852
+    ],
+    "output_units_M": 0.383,
+    "unit_price_per_M": 1.04,
+    "amounts_usd": [
+      5.0,
+      1.93,
+      0.4
+    ],
+    "subtotal_usd": 7.32,
+    "prepaid_commit_applied_usd": -7.32,
+    "amount_due_usd": 0.0
+  },
+  "reconciliation": {
+    "sealed_checkpoint_calls": 4622,
+    "probe_calls": 1,
+    "sealed_tokens_in": 6659801,
+    "sealed_tokens_out": 383305,
+    "ledger_tokens_in_rounded": 6660000,
+    "ledger_tokens_out_rounded": 383000,
+    "delta_in": 159,
+    "delta_out": -307,
+    "match": "within ledger rounding granularity (units reported in thousandths of a million tokens)",
+    "direction_note": "For Together, OUR sealed per-call checkpoints are the fine-grained record; the provider panel is the independent dollar total. Opposite direction from the OpenAI capture (disclosed)."
+  },
+  "note": "Family-2 boundary capture per deviation entry 2026-10-02; observed effective rate $1.04/1M both token types."
+}

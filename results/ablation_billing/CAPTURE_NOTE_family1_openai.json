@@ -1,0 +1,26 @@
+{
+  "capture": "OpenAI Family 1 (gpt-4.1-mini-2025-04-14) billing evidence \u2014 ablation serve replays",
+  "date_captured": "2026-10-02",
+  "files": {
+    "openai_family1_cost_2026-09-02_2026-10-02.csv": "39bb5d709861614349d57ffc1a43c64adfd00373202f9676e6429d0c6e58e47a",
+    "openai_family1_completions_usage_2026-09-02_2026-10-02.csv": "32e1faa27ea082def46fbdb742891aaec5654f79babbaee459bcf583f6a56f54"
+  },
+  "reconciliation": {
+    "sealed_checkpoint_calls": 4622,
+    "probe_calls": 2,
+    "export_requests": 4624,
+    "sealed_tokens_in": 6558107,
+    "probe_tokens_in": 24,
+    "export_tokens_in": 6558131,
+    "sealed_tokens_out": 395100,
+    "probe_tokens_out": 2,
+    "export_tokens_out": 395102,
+    "match": "exact to the token",
+    "cost_usd": {
+      "2026-10-01": 0.6161188,
+      "2026-10-02": 2.52498,
+      "family1_total": 3.1411
+    }
+  },
+  "note": "Sealed replay checkpoints (per-call usage) reconcile exactly with OpenAI's independent export; Family-1 boundary capture per deviation entry 2026-10-02."
+}
